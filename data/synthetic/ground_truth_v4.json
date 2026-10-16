@@ -1,0 +1,378 @@
+{
+  "project_id": "synthetic-ecu",
+  "documents": {
+    "4.0": {
+      "doc_id": "syn_hld_v4_heldout",
+      "file": "hld_v4_heldout.pdf"
+    }
+  },
+  "entities": {
+    "4.0": {
+      "components": [
+        {
+          "name": "DoorLockCtrl",
+          "description": "Decides the lock state of all doors from fob, crash and child lock inputs",
+          "category": "Application"
+        },
+        {
+          "name": "DoorPosSensor",
+          "description": "Reports whether the door is open or closed from a hall sensor",
+          "category": "Sensor"
+        },
+        {
+          "name": "LockActuatorDrv",
+          "description": "Drives the lock motor H-bridge and reads back the latch position",
+          "category": "Actuator"
+        },
+        {
+          "name": "KeyFobReceiver",
+          "description": "Decodes radio frames of the key fob into lock requests",
+          "category": "Sensor"
+        },
+        {
+          "name": "WindowInhibitMgr",
+          "description": "Blocks window movement while the doors are being locked",
+          "category": "Application"
+        },
+        {
+          "name": "CrashUnlockMon",
+          "description": "Watches the impact signal and demands automatic unlocking after a crash",
+          "category": "Service"
+        },
+        {
+          "name": "ChildLockHandler",
+          "description": "Stores and provides the rear door child lock setting",
+          "category": "Service"
+        },
+        {
+          "name": "DoorAjarDetector",
+          "description": "",
+          "category": "Sensor"
+        }
+      ],
+      "ports": [
+        {
+          "component": "DoorLockCtrl",
+          "name": "RpFobCmd",
+          "direction": "required",
+          "interface": "IFobCommand",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "DoorLockCtrl",
+          "name": "PpLockReq",
+          "direction": "provided",
+          "interface": "ILockRequest",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "DoorLockCtrl",
+          "name": "RpDoorPos",
+          "direction": "required",
+          "interface": "IDoorPos",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "DoorLockCtrl",
+          "name": "RpImpact",
+          "direction": "required",
+          "interface": "IImpactEvent",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "DoorLockCtrl",
+          "name": "RpChildLock",
+          "direction": "required",
+          "interface": "IChildLock",
+          "kind": "client_server"
+        },
+        {
+          "component": "DoorPosSensor",
+          "name": "PpDoorPos",
+          "direction": "provided",
+          "interface": "IDoorPos",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "LockActuatorDrv",
+          "name": "RpLockReq",
+          "direction": "required",
+          "interface": "ILockRequest",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "LockActuatorDrv",
+          "name": "PpLockState",
+          "direction": "provided",
+          "interface": "ILockState",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "LockActuatorDrv",
+          "name": "PpDriverDiag",
+          "direction": "provided",
+          "interface": "",
+          "kind": ""
+        },
+        {
+          "component": "KeyFobReceiver",
+          "name": "PpFobCmd",
+          "direction": "provided",
+          "interface": "IFobCommand",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "CrashUnlockMon",
+          "name": "PpImpact",
+          "direction": "provided",
+          "interface": "IImpactEvent",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "ChildLockHandler",
+          "name": "PpChildLock",
+          "direction": "provided",
+          "interface": "IChildLock",
+          "kind": "client_server"
+        },
+        {
+          "component": "WindowInhibitMgr",
+          "name": "RpLockState",
+          "direction": "required",
+          "interface": "ILockState",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "WindowInhibitMgr",
+          "name": "RpChildLocks",
+          "direction": "required",
+          "interface": "IChildLocks",
+          "kind": "client_server"
+        },
+        {
+          "component": "DoorAjarDetector",
+          "name": "PpAjar",
+          "direction": "provided",
+          "interface": "IAjarStatus",
+          "kind": ""
+        },
+        {
+          "component": "DoorAjarDetector",
+          "name": "RpDoorPos",
+          "direction": "required",
+          "interface": "IDoorPos",
+          "kind": "sender_receiver"
+        }
+      ],
+      "interfaces": [
+        {
+          "name": "ILockRequest",
+          "kind": "sender_receiver",
+          "data_elements": [
+            "LockCommand"
+          ]
+        },
+        {
+          "name": "ILockState",
+          "kind": "sender_receiver",
+          "data_elements": [
+            "LockStatus"
+          ]
+        },
+        {
+          "name": "IDoorPos",
+          "kind": "sender_receiver",
+          "data_elements": [
+            "DoorPosition"
+          ]
+        },
+        {
+          "name": "IFobCommand",
+          "kind": "sender_receiver",
+          "data_elements": [
+            "FobRequest"
+          ]
+        },
+        {
+          "name": "IImpactEvent",
+          "kind": "sender_receiver",
+          "data_elements": [
+            "ImpactSeverity"
+          ]
+        },
+        {
+          "name": "IChildLock",
+          "kind": "client_server",
+          "data_elements": [
+            "SetChildLock",
+            "GetChildLock"
+          ]
+        },
+        {
+          "name": "IChildLocks",
+          "kind": "client_server",
+          "data_elements": [
+            "ReadChildLockMask"
+          ]
+        }
+      ],
+      "signals": [
+        {
+          "name": "DoorPosition",
+          "sender": "DoorPosSensor",
+          "receivers": [
+            "DoorLockCtrl",
+            "DoorAjarDetector"
+          ],
+          "data_type": "boolean"
+        },
+        {
+          "name": "LockCommand",
+          "sender": "DoorLockCtrl",
+          "receivers": [
+            "LockActuatorDrv"
+          ],
+          "data_type": "uint8"
+        },
+        {
+          "name": "LockStatus",
+          "sender": "LockActuatorDrv",
+          "receivers": [
+            "WindowInhibitMgr"
+          ],
+          "data_type": "uint8"
+        },
+        {
+          "name": "FobRequest",
+          "sender": "KeyFobReceiver",
+          "receivers": [
+            "DoorLockCtrl"
+          ],
+          "data_type": "uint8"
+        },
+        {
+          "name": "ChildLockActive",
+          "sender": "ChildLockHandler",
+          "receivers": [
+            "DoorLockCtrl"
+          ],
+          "data_type": "boolean"
+        },
+        {
+          "name": "ImpactSeverity",
+          "sender": "CrashUnlockMon",
+          "receivers": [],
+          "data_type": "uint8"
+        }
+      ]
+    }
+  },
+  "port_described_in": {
+    "DoorLockCtrl.RpFobCmd": "table",
+    "DoorLockCtrl.PpLockReq": "table",
+    "DoorLockCtrl.RpDoorPos": "table",
+    "DoorLockCtrl.RpImpact": "prose",
+    "DoorLockCtrl.RpChildLock": "prose",
+    "DoorPosSensor.PpDoorPos": "table",
+    "LockActuatorDrv.RpLockReq": "table",
+    "LockActuatorDrv.PpLockState": "table",
+    "LockActuatorDrv.PpDriverDiag": "table",
+    "KeyFobReceiver.PpFobCmd": "prose",
+    "CrashUnlockMon.PpImpact": "prose",
+    "ChildLockHandler.PpChildLock": "prose",
+    "WindowInhibitMgr.RpLockState": "prose",
+    "WindowInhibitMgr.RpChildLocks": "prose",
+    "DoorAjarDetector.PpAjar": "table",
+    "DoorAjarDetector.RpDoorPos": "table"
+  },
+  "planted_defects": [
+    {
+      "rule_id": "M1",
+      "entities": [
+        "WindowInhibitMgr.RpChildLocks"
+      ],
+      "version": "4.0"
+    },
+    {
+      "rule_id": "M3",
+      "entities": [
+        "ImpactSeverity"
+      ],
+      "version": "4.0"
+    },
+    {
+      "rule_id": "M4",
+      "entities": [
+        "IChildLock",
+        "IChildLocks"
+      ],
+      "version": "4.0"
+    },
+    {
+      "rule_id": "C2",
+      "entities": [
+        "LockActuatorDrv.PpDriverDiag"
+      ],
+      "version": "4.0"
+    },
+    {
+      "rule_id": "C3",
+      "entities": [
+        "IAjarStatus"
+      ],
+      "version": "4.0"
+    },
+    {
+      "rule_id": "C4",
+      "entities": [
+        "DoorAjarDetector"
+      ],
+      "version": "4.0"
+    }
+  ],
+  "remaining_defects": [
+    {
+      "rule_id": "M1",
+      "entities": [
+        "WindowInhibitMgr.RpChildLocks"
+      ],
+      "version": "4.0"
+    },
+    {
+      "rule_id": "M3",
+      "entities": [
+        "ImpactSeverity"
+      ],
+      "version": "4.0"
+    },
+    {
+      "rule_id": "M4",
+      "entities": [
+        "IChildLock",
+        "IChildLocks"
+      ],
+      "version": "4.0"
+    },
+    {
+      "rule_id": "C2",
+      "entities": [
+        "LockActuatorDrv.PpDriverDiag"
+      ],
+      "version": "4.0"
+    },
+    {
+      "rule_id": "C3",
+      "entities": [
+        "IAjarStatus"
+      ],
+      "version": "4.0"
+    },
+    {
+      "rule_id": "C4",
+      "entities": [
+        "DoorAjarDetector"
+      ],
+      "version": "4.0"
+    }
+  ]
+}

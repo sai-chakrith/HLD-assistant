@@ -1,0 +1,342 @@
+{
+  "project_id": "synthetic-ecu",
+  "documents": {
+    "3.0": {
+      "doc_id": "syn_hld_v3_heldout",
+      "file": "hld_v3_heldout.pdf"
+    }
+  },
+  "entities": {
+    "3.0": {
+      "components": [
+        {
+          "name": "SeatHeatCtrl",
+          "description": "Regulates the seat heating level from the measured seat temperature",
+          "category": "Application"
+        },
+        {
+          "name": "SeatTempSensor",
+          "description": "Delivers the filtered seat surface temperature",
+          "category": "Sensor"
+        },
+        {
+          "name": "HeaterDriver",
+          "description": "Switches the heater mat with a PWM output stage",
+          "category": "Actuator"
+        },
+        {
+          "name": "OccupancyDetector",
+          "description": "",
+          "category": "Sensor"
+        },
+        {
+          "name": "SeatVentCtrl",
+          "description": "Controls the ventilation fan speed of the seat",
+          "category": "Application"
+        },
+        {
+          "name": "SeatVentCtl",
+          "description": "Legacy ventilation helper kept for backward compatibility",
+          "category": "Application"
+        },
+        {
+          "name": "SeatMemoryMgr",
+          "description": "Stores and recalls the driver seat position presets",
+          "category": "Service"
+        }
+      ],
+      "ports": [
+        {
+          "component": "SeatHeatCtrl",
+          "name": "RpSeatTemp",
+          "direction": "required",
+          "interface": "ISeatTemp",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "SeatHeatCtrl",
+          "name": "PpHeaterCmd",
+          "direction": "provided",
+          "interface": "IHeaterCmd",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "SeatHeatCtrl",
+          "name": "RpOccupancy",
+          "direction": "required",
+          "interface": "IOccupancy",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "SeatTempSensor",
+          "name": "PpSeatTemp",
+          "direction": "provided",
+          "interface": "ISeatTemp",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "HeaterDriver",
+          "name": "RpHeaterCmd",
+          "direction": "required",
+          "interface": "IHeaterCmd",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "HeaterDriver",
+          "name": "PpDriverStatus",
+          "direction": "provided",
+          "interface": "",
+          "kind": ""
+        },
+        {
+          "component": "OccupancyDetector",
+          "name": "PpOccupancy",
+          "direction": "provided",
+          "interface": "IOccupancy",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "OccupancyDetector",
+          "name": "RpSeatBelt",
+          "direction": "required",
+          "interface": "ISeatBelt",
+          "kind": ""
+        },
+        {
+          "component": "SeatVentCtrl",
+          "name": "RpOccupancy",
+          "direction": "required",
+          "interface": "IOccupancy",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "SeatVentCtrl",
+          "name": "PpVentLevel",
+          "direction": "provided",
+          "interface": "IVentLevel",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "SeatVentCtl",
+          "name": "RpVentLevel",
+          "direction": "required",
+          "interface": "IVentLevel",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "SeatMemoryMgr",
+          "name": "PpMemPos",
+          "direction": "provided",
+          "interface": "IMemPos",
+          "kind": "client_server"
+        },
+        {
+          "component": "SeatMemoryMgr",
+          "name": "RpHeatLevel",
+          "direction": "required",
+          "interface": "IHeatLevel",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "SeatMemoryMgr",
+          "name": "PpSeatBelt",
+          "direction": "provided",
+          "interface": "ISeatBelt",
+          "kind": ""
+        }
+      ],
+      "interfaces": [
+        {
+          "name": "ISeatTemp",
+          "kind": "sender_receiver",
+          "data_elements": [
+            "SeatTemperature"
+          ]
+        },
+        {
+          "name": "IHeaterCmd",
+          "kind": "sender_receiver",
+          "data_elements": [
+            "HeaterPwm"
+          ]
+        },
+        {
+          "name": "IOccupancy",
+          "kind": "sender_receiver",
+          "data_elements": [
+            "OccupancyState"
+          ]
+        },
+        {
+          "name": "IVentLevel",
+          "kind": "sender_receiver",
+          "data_elements": [
+            "VentLevel"
+          ]
+        },
+        {
+          "name": "IMemPos",
+          "kind": "client_server",
+          "data_elements": [
+            "StorePosition",
+            "RecallPosition"
+          ]
+        },
+        {
+          "name": "IHeatLevel",
+          "kind": "sender_receiver",
+          "data_elements": [
+            "HeatLevel"
+          ]
+        }
+      ],
+      "signals": [
+        {
+          "name": "SeatTemperature",
+          "sender": "SeatTempSensor",
+          "receivers": [
+            "SeatHeatCtrl"
+          ],
+          "data_type": "float32"
+        },
+        {
+          "name": "HeaterPwm",
+          "sender": "SeatHeatCtrl",
+          "receivers": [
+            "HeaterDriver"
+          ],
+          "data_type": "uint8"
+        },
+        {
+          "name": "OccupancyState",
+          "sender": "OccupancyDetector",
+          "receivers": [
+            "SeatHeatCtrl",
+            "SeatVentCtrl"
+          ],
+          "data_type": "boolean"
+        },
+        {
+          "name": "VentLevel",
+          "sender": "SeatVentCtrl",
+          "receivers": [
+            "SeatVentCtl"
+          ],
+          "data_type": "uint8"
+        },
+        {
+          "name": "StoredPosition",
+          "sender": "SeatMemoryMgr",
+          "receivers": [],
+          "data_type": "uint16"
+        }
+      ]
+    }
+  },
+  "port_described_in": {
+    "SeatHeatCtrl.RpSeatTemp": "table",
+    "SeatHeatCtrl.PpHeaterCmd": "table",
+    "SeatHeatCtrl.RpOccupancy": "table",
+    "SeatTempSensor.PpSeatTemp": "table",
+    "HeaterDriver.RpHeaterCmd": "table",
+    "HeaterDriver.PpDriverStatus": "table",
+    "OccupancyDetector.PpOccupancy": "table",
+    "OccupancyDetector.RpSeatBelt": "table",
+    "SeatVentCtrl.RpOccupancy": "prose",
+    "SeatVentCtrl.PpVentLevel": "prose",
+    "SeatVentCtl.RpVentLevel": "prose",
+    "SeatMemoryMgr.PpMemPos": "prose",
+    "SeatMemoryMgr.RpHeatLevel": "prose",
+    "SeatMemoryMgr.PpSeatBelt": "prose"
+  },
+  "planted_defects": [
+    {
+      "rule_id": "M1",
+      "entities": [
+        "SeatMemoryMgr.RpHeatLevel"
+      ],
+      "version": "3.0"
+    },
+    {
+      "rule_id": "M3",
+      "entities": [
+        "StoredPosition"
+      ],
+      "version": "3.0"
+    },
+    {
+      "rule_id": "M4",
+      "entities": [
+        "SeatVentCtrl",
+        "SeatVentCtl"
+      ],
+      "version": "3.0"
+    },
+    {
+      "rule_id": "C2",
+      "entities": [
+        "HeaterDriver.PpDriverStatus"
+      ],
+      "version": "3.0"
+    },
+    {
+      "rule_id": "C3",
+      "entities": [
+        "ISeatBelt"
+      ],
+      "version": "3.0"
+    },
+    {
+      "rule_id": "C4",
+      "entities": [
+        "OccupancyDetector"
+      ],
+      "version": "3.0"
+    }
+  ],
+  "remaining_defects": [
+    {
+      "rule_id": "M1",
+      "entities": [
+        "SeatMemoryMgr.RpHeatLevel"
+      ],
+      "version": "3.0"
+    },
+    {
+      "rule_id": "M3",
+      "entities": [
+        "StoredPosition"
+      ],
+      "version": "3.0"
+    },
+    {
+      "rule_id": "M4",
+      "entities": [
+        "SeatVentCtrl",
+        "SeatVentCtl"
+      ],
+      "version": "3.0"
+    },
+    {
+      "rule_id": "C2",
+      "entities": [
+        "HeaterDriver.PpDriverStatus"
+      ],
+      "version": "3.0"
+    },
+    {
+      "rule_id": "C3",
+      "entities": [
+        "ISeatBelt"
+      ],
+      "version": "3.0"
+    },
+    {
+      "rule_id": "C4",
+      "entities": [
+        "OccupancyDetector"
+      ],
+      "version": "3.0"
+    }
+  ]
+}

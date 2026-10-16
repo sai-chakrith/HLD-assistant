@@ -1,0 +1,806 @@
+{
+  "project_id": "synthetic-ecu",
+  "documents": {
+    "1.0": {
+      "doc_id": "syn_hld_v1",
+      "file": "hld_v1.pdf"
+    },
+    "2.0": {
+      "doc_id": "syn_hld_v2",
+      "file": "hld_v2.pdf"
+    }
+  },
+  "entities": {
+    "1.0": {
+      "components": [
+        {
+          "name": "WinSwitchHandler",
+          "description": "Reads the driver and passenger window switches and debounces them",
+          "category": "Sensor"
+        },
+        {
+          "name": "WinCtrlManager",
+          "description": "Coordinates window movement requests and the window state machine",
+          "category": "Application"
+        },
+        {
+          "name": "MotorDriver",
+          "description": "Drives the window lift motor through an H-bridge",
+          "category": "Actuator"
+        },
+        {
+          "name": "PositionSensor",
+          "description": "Provides the filtered window position in percent",
+          "category": "Sensor"
+        },
+        {
+          "name": "AntiPinchMonitor",
+          "description": "Detects obstructions while the window is closing",
+          "category": "Application"
+        },
+        {
+          "name": "DiagHandler",
+          "description": "Stores and reports window lift diagnostic trouble codes",
+          "category": "Service"
+        },
+        {
+          "name": "VehicleSpeedAdapter",
+          "description": "",
+          "category": "Adapter"
+        }
+      ],
+      "ports": [
+        {
+          "component": "WinSwitchHandler",
+          "name": "PpSwitchCmd",
+          "direction": "provided",
+          "interface": "ISwitchCmd",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "WinSwitchHandler",
+          "name": "RpLockState",
+          "direction": "required",
+          "interface": "IWinLockState",
+          "kind": ""
+        },
+        {
+          "component": "WinCtrlManager",
+          "name": "RpSwitchCmd",
+          "direction": "required",
+          "interface": "ISwitchCmd",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "WinCtrlManager",
+          "name": "RpPosition",
+          "direction": "required",
+          "interface": "IWinPosition",
+          "kind": "client_server"
+        },
+        {
+          "component": "WinCtrlManager",
+          "name": "RpPinch",
+          "direction": "required",
+          "interface": "IAntiPinch",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "WinCtrlManager",
+          "name": "RpMotorCmd",
+          "direction": "required",
+          "interface": "IMotorCmd",
+          "kind": "client_server"
+        },
+        {
+          "component": "WinCtrlManager",
+          "name": "PpLockState",
+          "direction": "provided",
+          "interface": "IWinLockState",
+          "kind": ""
+        },
+        {
+          "component": "MotorDriver",
+          "name": "PpMotorCmd",
+          "direction": "provided",
+          "interface": "IMotorCmd",
+          "kind": "client_server"
+        },
+        {
+          "component": "MotorDriver",
+          "name": "PpDiagData",
+          "direction": "provided",
+          "interface": "IDiagData",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "PositionSensor",
+          "name": "PpPosition",
+          "direction": "provided",
+          "interface": "IWinPosition",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "AntiPinchMonitor",
+          "name": "PpPinch",
+          "direction": "provided",
+          "interface": "IAntiPinch",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "AntiPinchMonitor",
+          "name": "RpPosition",
+          "direction": "required",
+          "interface": "IWinPosition",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "AntiPinchMonitor",
+          "name": "RpVehSpeed",
+          "direction": "required",
+          "interface": "IVehSpeed",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "AntiPinchMonitor",
+          "name": "RpBattVoltage",
+          "direction": "required",
+          "interface": "IBattVoltage",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "VehicleSpeedAdapter",
+          "name": "PpVehSpeed",
+          "direction": "provided",
+          "interface": "IVehSpeed",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "DiagHandler",
+          "name": "RpDiagData",
+          "direction": "required",
+          "interface": "IDiagData",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "DiagHandler",
+          "name": "PpDiagState",
+          "direction": "provided",
+          "interface": "",
+          "kind": ""
+        }
+      ],
+      "interfaces": [
+        {
+          "name": "ISwitchCmd",
+          "kind": "sender_receiver",
+          "data_elements": [
+            "SwitchState",
+            "SwitchSide"
+          ]
+        },
+        {
+          "name": "IWinPosition",
+          "kind": "sender_receiver",
+          "data_elements": [
+            "PositionPercent"
+          ]
+        },
+        {
+          "name": "IMotorCmd",
+          "kind": "client_server",
+          "data_elements": [
+            "MoveUp",
+            "MoveDown",
+            "Stop"
+          ]
+        },
+        {
+          "name": "IMotorCmnd",
+          "kind": "client_server",
+          "data_elements": [
+            "Brake"
+          ]
+        },
+        {
+          "name": "IAntiPinch",
+          "kind": "sender_receiver",
+          "data_elements": [
+            "PinchDetected"
+          ]
+        },
+        {
+          "name": "IVehSpeed",
+          "kind": "sender_receiver",
+          "data_elements": [
+            "VehicleSpeedKph"
+          ]
+        },
+        {
+          "name": "IDiagData",
+          "kind": "sender_receiver",
+          "data_elements": [
+            "WinFaultCode"
+          ]
+        },
+        {
+          "name": "IBattVoltage",
+          "kind": "sender_receiver",
+          "data_elements": [
+            "BattVoltageMv"
+          ]
+        }
+      ],
+      "signals": [
+        {
+          "name": "SwitchRequest",
+          "sender": "WinSwitchHandler",
+          "receivers": [
+            "WinCtrlManager"
+          ],
+          "data_type": "uint8"
+        },
+        {
+          "name": "WindowPosition",
+          "sender": "PositionSensor",
+          "receivers": [
+            "WinCtrlManager",
+            "AntiPinchMonitor"
+          ],
+          "data_type": "uint8"
+        },
+        {
+          "name": "MotorCommand",
+          "sender": "WinCtrlManager",
+          "receivers": [
+            "MotorDriver"
+          ],
+          "data_type": "uint8"
+        },
+        {
+          "name": "PinchDetected",
+          "sender": "AntiPinchMonitor",
+          "receivers": [
+            "WinCtrlManager"
+          ],
+          "data_type": "boolean"
+        },
+        {
+          "name": "VehicleSpeed",
+          "sender": "VehicleSpeedAdapter",
+          "receivers": [
+            "AntiPinchMonitor"
+          ],
+          "data_type": "uint16"
+        },
+        {
+          "name": "MotorCurrent",
+          "sender": "MotorDriver",
+          "receivers": [],
+          "data_type": "uint16"
+        }
+      ]
+    },
+    "2.0": {
+      "components": [
+        {
+          "name": "WinSwitchHandler",
+          "description": "Reads the driver and passenger window switches and debounces them",
+          "category": "Sensor"
+        },
+        {
+          "name": "WinCtrlManager",
+          "description": "Coordinates window movement requests and the window state machine",
+          "category": "Application"
+        },
+        {
+          "name": "MotorDriver",
+          "description": "Drives the window lift motor through an H-bridge",
+          "category": "Actuator"
+        },
+        {
+          "name": "PositionSensor",
+          "description": "Provides the filtered window position in percent",
+          "category": "Sensor"
+        },
+        {
+          "name": "AntiPinchMonitor",
+          "description": "Detects obstructions while the window is closing",
+          "category": "Application"
+        },
+        {
+          "name": "DiagHandler",
+          "description": "Stores and reports window lift diagnostic trouble codes",
+          "category": "Service"
+        },
+        {
+          "name": "VehicleSpeedAdapter",
+          "description": "Adapts the vehicle speed from the bus to the window lift software",
+          "category": "Adapter"
+        },
+        {
+          "name": "WinLockHandler",
+          "category": "Application",
+          "description": "Blocks rear window requests while the child lock is active"
+        }
+      ],
+      "ports": [
+        {
+          "component": "WinSwitchHandler",
+          "name": "PpSwitchCmd",
+          "direction": "provided",
+          "interface": "ISwitchCmd",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "WinCtrlManager",
+          "name": "RpSwitchCmd",
+          "direction": "required",
+          "interface": "ISwitchCmd",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "WinCtrlManager",
+          "name": "RpPosition",
+          "direction": "required",
+          "interface": "IWinPosition",
+          "kind": "client_server"
+        },
+        {
+          "component": "WinCtrlManager",
+          "name": "RpPinch",
+          "direction": "required",
+          "interface": "IAntiPinch",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "WinCtrlManager",
+          "name": "RpMotorCmd",
+          "direction": "required",
+          "interface": "IMotorCmd",
+          "kind": "client_server"
+        },
+        {
+          "component": "WinCtrlManager",
+          "name": "PpLockState",
+          "direction": "provided",
+          "interface": "IWinLockState",
+          "kind": ""
+        },
+        {
+          "component": "MotorDriver",
+          "name": "PpMotorCmd",
+          "direction": "provided",
+          "interface": "IMotorCmd",
+          "kind": "client_server"
+        },
+        {
+          "component": "MotorDriver",
+          "name": "PpDiagData",
+          "direction": "provided",
+          "interface": "IDiagData",
+          "kind": "client_server"
+        },
+        {
+          "component": "PositionSensor",
+          "name": "PpPosition",
+          "direction": "provided",
+          "interface": "IWinPosition",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "AntiPinchMonitor",
+          "name": "PpPinch",
+          "direction": "provided",
+          "interface": "IAntiPinch",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "AntiPinchMonitor",
+          "name": "RpPosition",
+          "direction": "required",
+          "interface": "IWinPosition",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "AntiPinchMonitor",
+          "name": "RpVehSpeed",
+          "direction": "required",
+          "interface": "IVehSpeed",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "AntiPinchMonitor",
+          "name": "RpBattVoltage",
+          "direction": "required",
+          "interface": "IBattVoltage",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "VehicleSpeedAdapter",
+          "name": "PpVehSpeed",
+          "direction": "provided",
+          "interface": "IVehSpeed",
+          "kind": "sender_receiver"
+        },
+        {
+          "component": "DiagHandler",
+          "name": "RpDiagData",
+          "direction": "required",
+          "interface": "IDiagData",
+          "kind": "client_server"
+        },
+        {
+          "component": "DiagHandler",
+          "name": "PpDiagState",
+          "direction": "provided",
+          "interface": "IDiagData",
+          "kind": "client_server"
+        },
+        {
+          "component": "WinLockHandler",
+          "name": "RpPosition",
+          "direction": "required",
+          "interface": "IWinPosition",
+          "kind": "sender_receiver"
+        }
+      ],
+      "interfaces": [
+        {
+          "name": "ISwitchCmd",
+          "kind": "sender_receiver",
+          "data_elements": [
+            "SwitchState",
+            "SwitchSide"
+          ]
+        },
+        {
+          "name": "IWinPosition",
+          "kind": "sender_receiver",
+          "data_elements": [
+            "PositionPercent"
+          ]
+        },
+        {
+          "name": "IMotorCmd",
+          "kind": "client_server",
+          "data_elements": [
+            "MoveUp",
+            "MoveDown",
+            "Stop"
+          ]
+        },
+        {
+          "name": "IMotorCmnd",
+          "kind": "client_server",
+          "data_elements": [
+            "Brake"
+          ]
+        },
+        {
+          "name": "IAntiPinch",
+          "kind": "sender_receiver",
+          "data_elements": [
+            "PinchDetected"
+          ]
+        },
+        {
+          "name": "IVehSpeed",
+          "kind": "sender_receiver",
+          "data_elements": [
+            "VehicleSpeedKph"
+          ]
+        },
+        {
+          "name": "IDiagData",
+          "kind": "client_server",
+          "data_elements": [
+            "WinFaultCode"
+          ]
+        },
+        {
+          "name": "IBattVoltage",
+          "kind": "sender_receiver",
+          "data_elements": [
+            "BattVoltageMv"
+          ]
+        }
+      ],
+      "signals": [
+        {
+          "name": "SwitchRequest",
+          "sender": "WinSwitchHandler",
+          "receivers": [
+            "WinCtrlManager"
+          ],
+          "data_type": "uint8"
+        },
+        {
+          "name": "WindowPosition",
+          "sender": "PositionSensor",
+          "receivers": [
+            "WinCtrlManager",
+            "AntiPinchMonitor"
+          ],
+          "data_type": "uint8"
+        },
+        {
+          "name": "MotorCommand",
+          "sender": "WinCtrlManager",
+          "receivers": [
+            "MotorDriver"
+          ],
+          "data_type": "uint8"
+        },
+        {
+          "name": "PinchDetected",
+          "sender": "AntiPinchMonitor",
+          "receivers": [
+            "WinCtrlManager"
+          ],
+          "data_type": "boolean"
+        },
+        {
+          "name": "VehicleSpeed",
+          "sender": "VehicleSpeedAdapter",
+          "receivers": [
+            "AntiPinchMonitor"
+          ],
+          "data_type": "uint16"
+        },
+        {
+          "name": "MotorCurrent",
+          "sender": "MotorDriver",
+          "receivers": [
+            "DiagHandler"
+          ],
+          "data_type": "uint16"
+        }
+      ]
+    }
+  },
+  "flows": {
+    "1.0": [
+      [
+        "Functional Flow Manual Window Operation",
+        [
+          "WinSwitchHandler reads the switch state and sends SwitchRequest to WinCtrlManager.",
+          "WinCtrlManager validates the request against the current window state.",
+          "WinCtrlManager sends MotorCommand to MotorDriver.",
+          "MotorDriver energises the motor and the window moves.",
+          "PositionSensor reports WindowPosition to WinCtrlManager until the end position is reached."
+        ]
+      ],
+      [
+        "Functional Flow Automatic Close with Anti-Pinch",
+        [
+          "WinSwitchHandler sends a SwitchRequest with the auto-close flag to WinCtrlManager.",
+          "VehicleSpeedAdapter provides VehicleSpeed to AntiPinchMonitor to select the pinch threshold.",
+          "AntiPinchMonitor evaluates WindowPosition and the motor load while the window closes.",
+          "AntiPinchMonitor sends PinchDetected to WinCtrlManager when an obstruction is found.",
+          "WinCtrlManager commands MotorDriver to reverse the window."
+        ]
+      ],
+      [
+        "Functional Flow Window Position Calibration",
+        [
+          "WinCtrlManager commands MotorDriver to drive the window to the upper end stop.",
+          "PositionSensor reports WindowPosition and WinCtrlManager stores the reference position.",
+          "WinCtrlManager commands MotorDriver to drive the window to the lower end stop."
+        ]
+      ]
+    ],
+    "2.0": [
+      [
+        "Functional Flow Manual Window Operation",
+        [
+          "WinSwitchHandler reads the switch state and sends SwitchRequest to WinCtrlManager.",
+          "WinCtrlManager validates the request against the current window state.",
+          "WinCtrlManager sends MotorCommand to MotorDriver.",
+          "MotorDriver energises the motor and the window moves.",
+          "PositionSensor reports WindowPosition to WinCtrlManager until the end position is reached."
+        ]
+      ],
+      [
+        "Functional Flow Automatic Close with Anti-Pinch",
+        [
+          "WinSwitchHandler sends a SwitchRequest with the auto-close flag to WinCtrlManager.",
+          "VehicleSpeedAdapter provides VehicleSpeed to AntiPinchMonitor to select the pinch threshold.",
+          "WinLockHandler blocks the request for rear windows while the child lock is active.",
+          "AntiPinchMonitor evaluates WindowPosition and the motor load while the window closes.",
+          "AntiPinchMonitor sends PinchDetected to WinCtrlManager when an obstruction is found.",
+          "WinCtrlManager commands MotorDriver to reverse the window."
+        ]
+      ],
+      [
+        "Functional Flow Window Position Calibration",
+        [
+          "WinCtrlManager commands MotorDriver to drive the window to the upper end stop.",
+          "PositionSensor reports WindowPosition and WinCtrlManager stores the reference position.",
+          "WinCtrlManager commands MotorDriver to drive the window to the lower end stop."
+        ]
+      ]
+    ]
+  },
+  "planted_defects": [
+    {
+      "rule_id": "M1",
+      "entities": [
+        "AntiPinchMonitor.RpBattVoltage"
+      ],
+      "version": "1.0"
+    },
+    {
+      "rule_id": "M2",
+      "entities": [
+        "IWinPosition",
+        "WinCtrlManager.RpPosition"
+      ],
+      "version": "1.0"
+    },
+    {
+      "rule_id": "M3",
+      "entities": [
+        "MotorCurrent"
+      ],
+      "version": "1.0"
+    },
+    {
+      "rule_id": "M4",
+      "entities": [
+        "IMotorCmd",
+        "IMotorCmnd"
+      ],
+      "version": "1.0"
+    },
+    {
+      "rule_id": "C1",
+      "entities": [
+        "DiagHandler"
+      ],
+      "version": "1.0"
+    },
+    {
+      "rule_id": "C2",
+      "entities": [
+        "DiagHandler.PpDiagState"
+      ],
+      "version": "1.0"
+    },
+    {
+      "rule_id": "C3",
+      "entities": [
+        "IWinLockState"
+      ],
+      "version": "1.0"
+    },
+    {
+      "rule_id": "C4",
+      "entities": [
+        "VehicleSpeedAdapter"
+      ],
+      "version": "1.0"
+    }
+  ],
+  "remaining_defects_v2": [
+    {
+      "rule_id": "M1",
+      "entities": [
+        "AntiPinchMonitor.RpBattVoltage"
+      ],
+      "version": "2.0"
+    },
+    {
+      "rule_id": "M2",
+      "entities": [
+        "IWinPosition",
+        "WinCtrlManager.RpPosition"
+      ],
+      "version": "2.0"
+    },
+    {
+      "rule_id": "M4",
+      "entities": [
+        "IMotorCmd",
+        "IMotorCmnd"
+      ],
+      "version": "2.0"
+    },
+    {
+      "rule_id": "C1",
+      "entities": [
+        "DiagHandler"
+      ],
+      "version": "2.0"
+    },
+    {
+      "rule_id": "C3",
+      "entities": [
+        "IWinLockState"
+      ],
+      "version": "2.0"
+    }
+  ],
+  "expected_diff": {
+    "from": "1.0",
+    "to": "2.0",
+    "entity_key": {
+      "components": "name",
+      "ports": "Component.Port",
+      "interfaces": "name",
+      "signals": "name"
+    },
+    "components": {
+      "added": [
+        "WinLockHandler"
+      ],
+      "removed": [],
+      "changed": {
+        "VehicleSpeedAdapter": {
+          "description": {
+            "old": "",
+            "new": "Adapts the vehicle speed from the bus to the window lift software"
+          }
+        }
+      }
+    },
+    "ports": {
+      "added": [
+        "WinLockHandler.RpPosition"
+      ],
+      "removed": [
+        "WinSwitchHandler.RpLockState"
+      ],
+      "changed": {
+        "DiagHandler.PpDiagState": {
+          "interface": {
+            "old": "",
+            "new": "IDiagData"
+          },
+          "kind": {
+            "old": "",
+            "new": "client_server"
+          }
+        },
+        "DiagHandler.RpDiagData": {
+          "kind": {
+            "old": "sender_receiver",
+            "new": "client_server"
+          }
+        },
+        "MotorDriver.PpDiagData": {
+          "kind": {
+            "old": "sender_receiver",
+            "new": "client_server"
+          }
+        }
+      }
+    },
+    "interfaces": {
+      "added": [],
+      "removed": [],
+      "changed": {
+        "IDiagData": {
+          "kind": {
+            "old": "sender_receiver",
+            "new": "client_server"
+          }
+        }
+      }
+    },
+    "signals": {
+      "added": [],
+      "removed": [],
+      "changed": {
+        "MotorCurrent": {
+          "receivers": {
+            "old": [],
+            "new": [
+              "DiagHandler"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

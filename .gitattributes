@@ -1,0 +1,4 @@
+# PDFs and images are binary: never convert line endings (autocrlf corrupted reportlab PDFs on checkout)
+*.pdf binary
+*.png binary
+*.xlsx binary

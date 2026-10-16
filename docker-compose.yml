@@ -1,0 +1,30 @@
+# One service: the API also serves the browser UI at http://localhost:8000.
+# Ollama runs on the HOST (needs the GPU); containers reach it through host.docker.internal.
+# Pull the model first on the host:  ollama pull qwen2.5:3b
+# Data is mounted, never baked into the image. First run, inside the api container:
+#   docker compose run --rm api sh -c "python scripts/download_data.py && python scripts/seed.py && python scripts/ingest_all.py && python scripts/extract_all.py && python scripts/ingest_synthetic.py && python scripts/run_checks_all.py"
+x-app-env: &app-env
+  OLLAMA_BASE_URL: http://host.docker.internal:11434
+  OLLAMA_MODEL: qwen2.5:3b
+  DEMO_MODEL: qwen2.5:3b
+  LLM_PROVIDER: ollama
+  HF_HOME: /hf-cache
+  DATA_DIR: /app/data
+  CHROMA_DIR: /app/chroma
+
+services:
+  api:
+    build: .
+    command: ["python", "-m", "uvicorn", "app.api:app", "--host", "0.0.0.0", "--port", "8000"]
+    environment: *app-env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./chroma:/app/chroma
+      - hf-cache:/hf-cache
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  hf-cache:

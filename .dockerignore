@@ -1,0 +1,13 @@
+.venv
+.git
+.env
+*.db
+chroma
+data/raw
+data/processed
+data/traces.jsonl
+data/debug
+eval/_work
+__pycache__
+*.pyc
+.pytest_cache
