@@ -1,0 +1,5 @@
+hld_v4_heldout.pdf  33cee688091ac8db78db0e8de1666c7c8274b5f9bbf2a5a8c32a1d6e24739894
+ground_truth_v4.json  08a0295c27571b2108bee56ef369b8b2f3751230e8799688bad0dae5172da593  (working-copy bytes; git blob with LF line endings: c6395775f14a2666fdcd3b80174586f70af15d27a4044dd386ab6b483938d060)
+generate_heldout_v4.py  b0903a5c856b20bf3bf7b6cb4b4e26d6da03307d1d584d3a18384aef88516334
+date: 2026-10-07
+FROZEN before parser changes; do not edit; run evaluation once

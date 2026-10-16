@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Ask{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Ask</h1>
+</div>
+<div class="ask-layout">
+  <div class="question-workbench">
+    <form id="ask-form" class="ask-form" autocomplete="off">
+      <label class="field" for="question">What would you like to understand?</label>
+      <div class="ask-row">
+        <input type="text" id="question" name="question" required placeholder="Ask about a component, signal, or release…" maxlength="2000">
+        <button class="btn primary" type="submit" id="ask-btn">Ask</button>
+      </div>
+    </form>
+    <div id="samples-box" hidden>
+      <h2 class="small-head" id="samples-h">Try one of these</h2>
+      <ul id="samples" class="samples" aria-labelledby="samples-h"></ul>
+    </div>
+    <div id="answer" class="answer" aria-live="polite">
+    </div>
+    <p id="history-storage-warning" class="note warn" role="status" hidden>Browser storage is unavailable or full. Questions work, but history may not survive navigation.</p>
+  </div>
+  <details class="session-panel" id="session-panel" hidden>
+    <summary id="hist-h">Recent questions</summary>
+    <p class="muted">Up to 50 questions saved in this browser tab, separately for each project and user.</p>
+    <ol id="history" class="history" reversed></ol>
+    <p id="history-empty" class="muted">No questions yet.</p>
+  </details>
+</div>
+{% endblock %}
+{% block scripts %}<script type="module" src="/static/js/ask.js?v=20261016-samples"></script>{% endblock %}

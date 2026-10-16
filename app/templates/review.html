@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Review{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Review</h1>
+</div>
+
+<div class="toolbar">
+  <label class="field">Document
+    <select id="doc-select" data-wanted="{{ doc }}"><option>Loading</option></select>
+  </label>
+</div>
+
+<div class="view-switch" role="group" aria-label="Review view">
+  <button type="button" data-view="issues" aria-pressed="true">Issues</button>
+  <button type="button" data-view="versions" aria-pressed="false">Compare versions</button>
+  <button type="button" data-view="export" aria-pressed="false">Export</button>
+</div>
+<section class="section" data-view-panel="issues" aria-labelledby="findings-h">
+  <h2 id="findings-h">Issues <span class="muted" id="findings-count"></span></h2>
+  {% if can_review %}
+  <p class="muted">Check the source before recording a decision.</p>
+  {% else %}
+  <p class="muted">You are a viewer in this project, so approve and reject are not available.</p>
+  {% endif %}
+  <div id="findings-note"></div>
+  <div id="findings"><p class="state">Loading the issues.</p></div>
+</section>
+
+<section class="section" data-view-panel="versions" aria-labelledby="compare-h" hidden>
+  <h2 id="compare-h">Compare versions</h2>
+  <form id="compare-form" class="toolbar">
+    <label class="field">Older version<select id="doc-a"></select></label>
+    <label class="field">Newer version<select id="doc-b"></select></label>
+    <button class="btn primary" type="submit">Compare</button>
+  </form>
+  <div id="compare"><p class="state">Choose two versions to see what changed.</p></div>
+</section>
+
+<section class="section" data-view-panel="export" aria-labelledby="export-h" hidden>
+  <h2 id="export-h">Export</h2>
+  <div class="toolbar" role="group" aria-labelledby="export-h">
+    <label class="field">Format
+      <select id="export-fmt"><option value="xlsx">Excel (xlsx)</option><option value="csv">CSV</option><option value="json">JSON</option></select>
+    </label>
+    <button class="btn" type="button" data-export="inventory">Inventory</button>
+    <button class="btn" type="button" data-export="findings">Issues</button>
+    <button class="btn" type="button" data-export="diff" disabled title="Compare two versions first">Version diff</button>
+  </div>
+  <p id="export-msg" class="muted" aria-live="polite"></p>
+</section>
+
+{% if can_review %}
+<template id="review-actions">
+  <div class="btn-group">
+    <button class="btn" type="button" data-decision="approved">Approve</button>
+    <button class="btn" type="button" data-decision="rejected">Reject</button>
+  </div>
+</template>
+{% endif %}
+<script type="application/json" id="rule-names">{{ rule_names | tojson }}</script>
+{% endblock %}
+{% block scripts %}<script type="module" src="/static/js/review.js"></script>{% endblock %}

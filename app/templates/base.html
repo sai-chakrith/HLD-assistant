@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>{% block title %}{% endblock %} · HLD Assistant</title>
+  <link rel="stylesheet" href="/static/css/app.css?v=20261016">
+</head>
+<body data-page="{{ page }}" data-user="{{ user }}" data-project="{{ project }}" data-role="{{ role }}">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">H</span> HLD Assistant</a>
+  {% if project %}<button class="project-picker" type="button" id="workspace-switch" aria-label="Switch project"><span class="project-name">{{ project_name }}</span><span aria-hidden="true">⌄</span></button>{% endif %}
+  <nav class="nav" aria-label="Screens">
+    {% for key, href, label in pages %}
+    <a href="{{ href }}"{% if key == page %} aria-current="page"{% endif %}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="{% if key == 'ask' %}M4 4h16v12H9l-5 4V4zm4 4h8M8 12h5{% elif key == 'architecture' %}M9 3h6v6H9zM3 15h6v6H3zm12 0h6v6h-6zM12 9v3H6v3m6-3h6v3{% elif key == 'review' %}m4 6 2 2 4-4m3 2h7M4 13l2 2 4-4m3 2h7M4 20h6m3 0h7{% else %}M5 3h9l5 5v13H5V3zm9 0v6h5M9 13h6m-6 4h6{% endif %}"/></svg>{{ label }}</a>
+    {% endfor %}
+  </nav>
+  <div class="bar-right">
+    <span class="status" id="status" role="status">
+      <span class="dot" id="status-dot" data-state="unknown" aria-hidden="true"></span><span id="status-text">Checking</span>
+    </span>
+    <button class="btn" type="button" id="settings-btn" aria-expanded="false" aria-controls="settings">
+      <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path fill="currentColor" d="M6.9 1h2.2l.4 1.9c.4.1.8.3 1.1.5l1.6-1 1.6 1.5-1 1.7c.2.3.4.7.5 1.1l1.9.4v2.2l-1.9.4c-.1.4-.3.8-.5 1.1l1 1.7-1.6 1.5-1.6-1c-.3.2-.7.4-1.1.5L9.1 15H6.9l-.4-1.9c-.4-.1-.8-.3-1.1-.5l-1.6 1-1.6-1.5 1-1.7c-.2-.3-.4-.7-.5-1.1L1 8.9V6.7l1.9-.4c.1-.4.3-.8.5-1.1l-1-1.7L4 2l1.6 1c.3-.2.7-.4 1.1-.5L6.9 1zM8 5.5a2.3 2.3 0 1 0 0 4.6 2.3 2.3 0 0 0 0-4.6z"/></svg>
+      Settings
+    </button>
+  </div>
+</header>
+<div class="settings" id="settings" role="dialog" aria-label="Settings" hidden>
+  <label class="field" for="project-select">Project</label>
+  <select id="project-select" {% if not projects %}disabled{% endif %}>
+    {% for p in projects %}
+    <option value="{{ p.project_id }}"{% if p.project_id == project %} selected{% endif %}>{{ p.title }}</option>
+    {% else %}
+    <option value="">No project available</option>
+    {% endfor %}
+  </select>
+  <label class="field" for="user-select">Signed in as{% if not secure_auth %} (demo role){% endif %}</label>
+  <select id="user-select">
+    {% for u in users %}
+    <option value="{{ u }}"{% if u == user %} selected{% endif %}>{{ u }}</option>
+    {% endfor %}
+  </select>
+  {% if secure_auth %}<button class="btn" type="button" id="logout-btn">Sign out</button>{% endif %}
+  <p class="muted">Your role in this project: {{ role or "none" }}. Projects keep documents and access separate.</p>
+</div>
+<main id="main" tabindex="-1">
+  {% if not project %}
+  <div class="page-head"><h1>No project</h1></div>
+  <p class="state">You are signed in as <span class="mono">{{ user }}</span>, which has no project. Open Settings and choose another demo role.</p>
+  {% else %}
+  {% block content %}{% endblock %}
+  {% endif %}
+</main>
+<script type="module" src="/static/js/api.js"></script>
+<script type="module" src="/static/js/workspace.js"></script>
+{% if project %}{% block scripts %}{% endblock %}{% endif %}
+</body>
+</html>

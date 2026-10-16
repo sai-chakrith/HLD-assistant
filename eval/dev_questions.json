@@ -1,0 +1,880 @@
+{
+  "description": "Development set for retrieval tuning (NOT the gold set). Written from the PDFs/inventory, not from system output.",
+  "questions": [
+    {
+      "id": "D01",
+      "project_id": "body-comfort",
+      "category": "ports",
+      "question": "Which ports does the AutoWipingEvaluator have?",
+      "expected_docs": [
+        "bodycomfort_r3.2.3",
+        "bodycomfort_r3.1.5"
+      ],
+      "expected_pages": [
+        10,
+        11
+      ],
+      "expected_section": "4.1.1",
+      "key_facts": [
+        [
+          "ReqFrontAutoWiping"
+        ],
+        [
+          "VehicleLongitudinalSpeed"
+        ],
+        [
+          "OutsideBrightness"
+        ]
+      ],
+      "component": "AutoWipingEvaluator",
+      "version_named": null,
+      "identifiers": [
+        "AutoWipingEvaluator"
+      ],
+      "notes": "source: rain sensing diagram labels, bodycomfort_r3.2.3 p.10 / r3.1.5 p.11; inventory ports of AutoWimpingEvaluator::AutoWipingEvaluator. Avoids StaRainAmount (gold R12). Pages listed for both releases: R3.2.3 page and R3.1.5 page (R3.1.5 is offset by +1 because of an extra blank front page)."
+    },
+    {
+      "id": "D02",
+      "project_id": "body-comfort",
+      "category": "ports",
+      "question": "Which signals does the MirrorAdjust Manager send?",
+      "expected_docs": [
+        "bodycomfort_r3.2.3",
+        "bodycomfort_r3.1.5"
+      ],
+      "expected_pages": [
+        12,
+        13
+      ],
+      "expected_section": "4.2.1",
+      "key_facts": [
+        [
+          "ReqMirrorMove"
+        ],
+        [
+          "ReqStorePosMemory"
+        ]
+      ],
+      "component": "MirrorAdjust Manager",
+      "version_named": null,
+      "identifiers": [],
+      "notes": "source: mirror adjustment diagram, r3.2.3 p.12 / r3.1.5 p.13; inventory signals with sender 'MirrorAdjust Manager'. Pages listed for both releases: R3.2.3 page and R3.1.5 page (R3.1.5 is offset by +1 because of an extra blank front page)."
+    },
+    {
+      "id": "D03",
+      "project_id": "body-comfort",
+      "category": "ports",
+      "question": "Which status data elements does the MirrorActuator report back in the mirror adjustment architecture?",
+      "expected_docs": [
+        "bodycomfort_r3.2.3",
+        "bodycomfort_r3.1.5"
+      ],
+      "expected_pages": [
+        12,
+        13
+      ],
+      "expected_section": "4.2.1",
+      "key_facts": [
+        [
+          "StaMirrorPos"
+        ],
+        [
+          "StaMirrorMove"
+        ],
+        [
+          "StaMirrorFault"
+        ]
+      ],
+      "component": "MirrorActuator",
+      "version_named": null,
+      "identifiers": [
+        "MirrorActuator"
+      ],
+      "notes": "source: mirror adjustment diagram, r3.2.3 p.12 / r3.1.5 p.13; inventory signals with sender MirrorActuator. Pages listed for both releases: R3.2.3 page and R3.1.5 page (R3.1.5 is offset by +1 because of an extra blank front page)."
+    },
+    {
+      "id": "D04",
+      "project_id": "body-comfort",
+      "category": "ports",
+      "question": "Which ports does the WiperWasher component have?",
+      "expected_docs": [
+        "bodycomfort_r3.2.3",
+        "bodycomfort_r3.1.5"
+      ],
+      "expected_pages": [
+        8,
+        9
+      ],
+      "expected_section": "4.1",
+      "key_facts": [
+        [
+          "WiperWasherManager"
+        ],
+        [
+          "outside brightness"
+        ]
+      ],
+      "component": "WiperWasher",
+      "version_named": null,
+      "identifiers": [
+        "WiperWasher"
+      ],
+      "notes": "GAP CASE: the inventory has no ports for WiperWasher (only its sub-component AutoWipingEvaluator in 4.1.1 has extracted ports). Section 4.1 (r3.2.3 p.8-9 / r3.1.5 p.9-10) only shows a figure without readable port labels and describes related components in text: WiperWasherManager provides the core functionality, ExteriorLight provides outside brightness to Rain Sensing, ClampControl/BatteryMonitor provide vehicle state. A good answer says no port list is given for WiperWasher and summarises these components / points to AutoWipingEvaluator (4.1.1). Key facts come from that text (p.8 r3.2.3, p.9 r3.1.5), so the page check passes here, but the facts are descriptive, not port names. Pages listed for both releases: R3.2.3 page and R3.1.5 page (R3.1.5 is offset by +1 because of an extra blank front page)."
+    },
+    {
+      "id": "D05",
+      "project_id": "synthetic-ecu",
+      "category": "ports",
+      "question": "Which interfaces does the DoorLockCtrl require?",
+      "expected_docs": [
+        "syn_hld_v4_heldout"
+      ],
+      "expected_pages": [
+        4,
+        6
+      ],
+      "expected_section": "3",
+      "key_facts": [
+        [
+          "IFobCommand"
+        ],
+        [
+          "IDoorPos"
+        ],
+        [
+          "IChildLock"
+        ]
+      ],
+      "component": "DoorLockCtrl",
+      "version_named": null,
+      "identifiers": [
+        "DoorLockCtrl"
+      ],
+      "notes": "source: hld_v4_heldout.pdf p.4 port table (RpFobCmd/IFobCommand, RpDoorPos/IDoorPos) and p.6 running text (RpImpact/IImpactEvent, RpChildLock/IChildLock); IImpactEvent is a valid 4th answer. Note the inventory misses RpImpact."
+    },
+    {
+      "id": "D06",
+      "project_id": "synthetic-ecu",
+      "category": "ports",
+      "question": "Which ports does the SeatMemoryMgr have?",
+      "expected_docs": [
+        "syn_hld_v3_heldout"
+      ],
+      "expected_pages": [
+        6
+      ],
+      "expected_section": "3.2",
+      "key_facts": [
+        [
+          "PpMemPos"
+        ],
+        [
+          "RpHeatLevel"
+        ],
+        [
+          "PpSeatBelt"
+        ]
+      ],
+      "component": "SeatMemoryMgr",
+      "version_named": null,
+      "identifiers": [
+        "SeatMemoryMgr"
+      ],
+      "notes": "source: hld_v3_heldout.pdf p.6 running text (section 3.2); inventory agrees."
+    },
+    {
+      "id": "D07",
+      "project_id": "synthetic-ecu",
+      "category": "ports",
+      "question": "Which ports does the LockActuatorDrv provide and require?",
+      "expected_docs": [
+        "syn_hld_v4_heldout"
+      ],
+      "expected_pages": [
+        5
+      ],
+      "expected_section": "3.1",
+      "key_facts": [
+        [
+          "RpLockReq"
+        ],
+        [
+          "PpLockState"
+        ],
+        [
+          "PpDriverDiag"
+        ]
+      ],
+      "component": "LockActuatorDrv",
+      "version_named": null,
+      "identifiers": [
+        "LockActuatorDrv"
+      ],
+      "notes": "source: hld_v4_heldout.pdf p.5 port table continuation; PpDriverDiag has no interface reference."
+    },
+    {
+      "id": "D08",
+      "project_id": "synthetic-ecu",
+      "category": "ports",
+      "question": "Which interfaces does the WinCtrlManager require in the Window Lift ECU?",
+      "expected_docs": [
+        "syn_hld_v2",
+        "syn_hld_v1"
+      ],
+      "expected_pages": [
+        6
+      ],
+      "expected_section": "3.2",
+      "key_facts": [
+        [
+          "ISwitchCmd"
+        ],
+        [
+          "IAntiPinch"
+        ],
+        [
+          "IMotorCmd"
+        ]
+      ],
+      "component": "WinCtrlManager",
+      "version_named": null,
+      "identifiers": [
+        "WinCtrlManager"
+      ],
+      "notes": "source: hld_v2.pdf / hld_v1.pdf p.6 port table: RpSwitchCmd/ISwitchCmd, RpPosition/IWinPosition, RpPinch/IAntiPinch, RpMotorCmd/IMotorCmd (same in both versions; IWinPosition also valid)."
+    },
+    {
+      "id": "D09",
+      "project_id": "synthetic-ecu",
+      "category": "version",
+      "question": "Which software component was added in version 2.0 of the Window Lift ECU HLD and what does it do?",
+      "expected_docs": [
+        "syn_hld_v2"
+      ],
+      "expected_pages": [
+        1,
+        4
+      ],
+      "expected_section": "2.1",
+      "key_facts": [
+        [
+          "WinLockHandler"
+        ],
+        [
+          "child lock"
+        ]
+      ],
+      "component": null,
+      "version_named": "2.0",
+      "identifiers": [],
+      "notes": "source: hld_v2.pdf p.1 change history ('Added WinLockHandler') and p.4 component table ('Blocks rear window requests while the child lock is active'); absent in v1."
+    },
+    {
+      "id": "D10",
+      "project_id": "synthetic-ecu",
+      "category": "version",
+      "question": "In version 2.0 of the Window Lift ECU HLD, which component receives the MotorCurrent signal?",
+      "expected_docs": [
+        "syn_hld_v2"
+      ],
+      "expected_pages": [
+        7
+      ],
+      "expected_section": "4.1",
+      "key_facts": [
+        [
+          "DiagHandler"
+        ]
+      ],
+      "component": null,
+      "version_named": "2.0",
+      "identifiers": [
+        "MotorCurrent"
+      ],
+      "notes": "source: hld_v2.pdf p.7 signal table (MotorCurrent: MotorDriver -> DiagHandler). In v1.0 the receiver column is '-' (no receiver)."
+    },
+    {
+      "id": "D11",
+      "project_id": "synthetic-ecu",
+      "category": "version",
+      "question": "What changed between version 1.0 and version 2.0 of the Window Lift ECU HLD according to the document change history?",
+      "expected_docs": [
+        "syn_hld_v2",
+        "syn_hld_v1"
+      ],
+      "expected_pages": [
+        1
+      ],
+      "expected_section": "0",
+      "key_facts": [
+        [
+          "WinLockHandler"
+        ],
+        [
+          "missing descriptions",
+          "description"
+        ],
+        [
+          "signal receivers",
+          "receivers"
+        ]
+      ],
+      "component": null,
+      "version_named": "1.0 -> 2.0",
+      "identifiers": [],
+      "notes": "source: hld_v2.pdf p.1 change history entry 02.06.2025 v2.0. Other diffs: VehicleSpeedAdapter description added, WinSwitchHandler RpLockState removed, MotorCurrent receiver DiagHandler, WinLockHandler step in flow 5.2."
+    },
+    {
+      "id": "D12",
+      "project_id": "body-comfort",
+      "category": "version",
+      "question": "In release R3.1.5 of the body and comfort explanation document, what is the document version and who is the document owner?",
+      "expected_docs": [
+        "bodycomfort_r3.1.5"
+      ],
+      "expected_pages": [
+        1
+      ],
+      "expected_section": "0",
+      "key_facts": [
+        [
+          "1.0.1"
+        ],
+        [
+          "AUTOSAR GbR"
+        ]
+      ],
+      "component": null,
+      "version_named": "R3.1.5",
+      "identifiers": [],
+      "notes": "source: bodycomfort_r3.1.5.pdf p.1 (Document Version 1.0.1, Document Owner AUTOSAR GbR, Part of Release 3.1). R3.2.3 says 1.0.2 and owner 'AUTOSAR'."
+    },
+    {
+      "id": "D13",
+      "project_id": "body-comfort",
+      "category": "version",
+      "question": "In the latest body and comfort release, what is the most recent entry in the document change history?",
+      "expected_docs": [
+        "bodycomfort_r3.2.3"
+      ],
+      "expected_pages": [
+        1
+      ],
+      "expected_section": "0",
+      "key_facts": [
+        [
+          "1.0.2"
+        ],
+        [
+          "27.04.2011"
+        ],
+        [
+          "Legal disclaimer revised"
+        ]
+      ],
+      "component": null,
+      "version_named": "latest",
+      "identifiers": [],
+      "notes": "source: bodycomfort_r3.2.3.pdf p.1 change history (27.04.2011, 1.0.2, Legal disclaimer revised). The older R3.1.5 newest entry is 23.06.2008 / 1.0.1."
+    },
+    {
+      "id": "D14",
+      "project_id": "chassis",
+      "category": "version",
+      "question": "What changed between release R3.1.5 and R3.2.3 of the chassis application interfaces explanation document?",
+      "expected_docs": [
+        "chassis_r3.2.3",
+        "chassis_r3.1.5"
+      ],
+      "expected_pages": [
+        1,
+        2
+      ],
+      "expected_section": "0",
+      "key_facts": [
+        [
+          "1.0.2"
+        ],
+        [
+          "Legal disclaimer"
+        ]
+      ],
+      "component": null,
+      "version_named": "R3.1.5 -> R3.2.3",
+      "identifiers": [],
+      "notes": "source: chassis_r3.2.3.pdf p.1 change history (27.04.2011, 1.0.2, Legal disclaimer revised) and p.2 new disclaimer; content chapters are otherwise identical (r3.1.5 has an extra blank page). Document owner changed from 'AUTOSAR GbR' to 'AUTOSAR'."
+    },
+    {
+      "id": "D15",
+      "project_id": "body-comfort",
+      "category": "identifier",
+      "question": "What is the t_LightGroupConfiguration type used for?",
+      "expected_docs": [
+        "bodycomfort_r3.2.3",
+        "bodycomfort_r3.1.5"
+      ],
+      "expected_pages": [
+        21,
+        22
+      ],
+      "expected_section": "4.3.11",
+      "key_facts": [
+        [
+          "Bitfield"
+        ],
+        [
+          "light source"
+        ]
+      ],
+      "component": null,
+      "version_named": null,
+      "identifiers": [
+        "t_LightGroupConfiguration"
+      ],
+      "notes": "source: r3.2.3 p.21 / r3.1.5 p.22: IntLightGroup0..15 configured by 'Configuration-Bitfields' of type t_LightGroupConfiguration, each position corresponds to an interior light source; may be stored in NVRAM. Pages listed for both releases: R3.2.3 page and R3.1.5 page (R3.1.5 is offset by +1 because of an extra blank front page)."
+    },
+    {
+      "id": "D16",
+      "project_id": "body-comfort",
+      "category": "identifier",
+      "question": "Which component sends ReqCarFinder and what feature does it serve?",
+      "expected_docs": [
+        "bodycomfort_r3.2.3",
+        "bodycomfort_r3.1.5"
+      ],
+      "expected_pages": [
+        14,
+        15,
+        16,
+        17
+      ],
+      "expected_section": "4.3",
+      "key_facts": [
+        [
+          "Remote Key"
+        ],
+        [
+          "carfinder"
+        ]
+      ],
+      "component": null,
+      "version_named": null,
+      "identifiers": [
+        "ReqCarFinder"
+      ],
+      "notes": "source: interior light diagram r3.2.3 p.14 / r3.1.5 p.15 (ReqCarFinder, CarFinder port of Remote Key) and text r3.2.3 p.16 / r3.1.5 p.17 ('Remote Key also delivers requests for carfinder features of the Interior Light'); inventory signal sender Remote Key -> Interior Light Manager. Pages listed for both releases: R3.2.3 page and R3.1.5 page (R3.1.5 is offset by +1 because of an extra blank front page)."
+    },
+    {
+      "id": "D17",
+      "project_id": "body-comfort",
+      "category": "identifier",
+      "question": "What does ReqRearEntry indicate in the seat adjustment architecture?",
+      "expected_docs": [
+        "bodycomfort_r3.2.3",
+        "bodycomfort_r3.1.5"
+      ],
+      "expected_pages": [
+        24,
+        25
+      ],
+      "expected_section": "4.4.2.1",
+      "key_facts": [
+        [
+          "rear seats"
+        ],
+        [
+          "auto glide",
+          "moving forward"
+        ]
+      ],
+      "component": null,
+      "version_named": null,
+      "identifiers": [
+        "ReqRearEntry"
+      ],
+      "notes": "source: r3.2.3 p.24 / r3.1.5 p.25 (section 4.4.2.1 HMI): user's demand for access to the rear seats, may move a front seat forward, also known as auto glide. Pages listed for both releases: R3.2.3 page and R3.1.5 page (R3.1.5 is offset by +1 because of an extra blank front page)."
+    },
+    {
+      "id": "D18",
+      "project_id": "synthetic-ecu",
+      "category": "identifier",
+      "question": "Which interface types the RpChildLocks port of the WindowInhibitMgr, and which operation does that interface offer?",
+      "expected_docs": [
+        "syn_hld_v4_heldout"
+      ],
+      "expected_pages": [
+        6,
+        7
+      ],
+      "expected_section": "3.2",
+      "key_facts": [
+        [
+          "IChildLocks"
+        ],
+        [
+          "ReadChildLockMask"
+        ]
+      ],
+      "component": "WindowInhibitMgr",
+      "version_named": null,
+      "identifiers": [
+        "RpChildLocks",
+        "WindowInhibitMgr"
+      ],
+      "notes": "source: hld_v4_heldout.pdf p.6 running text (RpChildLocks typed by IChildLocks) and p.7 interface table (IChildLocks, Client/Server, ReadChildLockMask). Note: this port is not in the extracted inventory (near-duplicate of IChildLock)."
+    },
+    {
+      "id": "D19",
+      "project_id": "hmi",
+      "category": "identifier",
+      "question": "Which document is referenced as AUTOSAR_CP_EXP_AIBodyAndComfort and why does the HMI document refer to it?",
+      "expected_docs": [
+        "hmi_r25-11"
+      ],
+      "expected_pages": [
+        11,
+        20
+      ],
+      "expected_section": "4.4",
+      "key_facts": [
+        [
+          "Body and Comfort"
+        ],
+        [
+          "PDC"
+        ]
+      ],
+      "component": null,
+      "version_named": null,
+      "identifiers": [
+        "AUTOSAR_CP_EXP_AIBodyAndComfort"
+      ],
+      "notes": "source: hmi_r25-11.pdf p.20 References ([1] AUTOSAR_CP_EXP_AIBodyAndComfort) and p.11 section 4.4: the actually standardized AUTOSAR PDC ports and interfaces are explained in the 'Explanation of Application Interfaces of the Body and Comfort Domain' document [1]; the PDC example in the HMI document is not related to them."
+    },
+    {
+      "id": "D20",
+      "project_id": "body-comfort",
+      "category": "unanswerable",
+      "question": "What ASIL rating is assigned to the FrontWiper actuator component?",
+      "expected_docs": [],
+      "expected_pages": [],
+      "expected_section": "",
+      "key_facts": [],
+      "component": "FrontWiper",
+      "version_named": null,
+      "identifiers": [
+        "FrontWiper"
+      ],
+      "notes": "Verified absent: 'ASIL' does not occur in either body comfort PDF; FrontWiper is only described as an actuator component (p.9)."
+    },
+    {
+      "id": "D21",
+      "project_id": "synthetic-ecu",
+      "category": "unanswerable",
+      "question": "What CAN bus baud rate does the Door Control Unit use for the key fob messages?",
+      "expected_docs": [],
+      "expected_pages": [],
+      "expected_section": "",
+      "key_facts": [],
+      "component": null,
+      "version_named": null,
+      "identifiers": [],
+      "notes": "Verified absent: no 'CAN' or 'baud' in hld_v4_heldout.pdf (or any synthetic HLD); key fob decoding is mentioned but no bus parameters."
+    },
+    {
+      "id": "D22",
+      "project_id": "chassis",
+      "category": "unanswerable",
+      "question": "What watchdog timeout is specified for the ESC software composition?",
+      "expected_docs": [],
+      "expected_pages": [],
+      "expected_section": "",
+      "key_facts": [],
+      "component": "ESC",
+      "version_named": null,
+      "identifiers": [
+        "ESC"
+      ],
+      "notes": "Verified absent: 'watchdog' does not occur in chassis PDFs; no timing values for ESC are given."
+    },
+    {
+      "id": "D23",
+      "project_id": "hmi",
+      "category": "unanswerable",
+      "question": "Which Bluetooth profiles must the telematics unit support?",
+      "expected_docs": [],
+      "expected_pages": [],
+      "expected_section": "",
+      "key_facts": [],
+      "component": null,
+      "version_named": null,
+      "identifiers": [],
+      "notes": "Verified absent: 'Bluetooth' does not occur in hmi_r25-11.pdf; only simple UI-device interfaces are standardized."
+    },
+    {
+      "id": "D24",
+      "project_id": "body-comfort",
+      "category": "unanswerable",
+      "question": "What is the recommended oven temperature for baking sourdough bread?",
+      "expected_docs": [],
+      "expected_pages": [],
+      "expected_section": "",
+      "key_facts": [],
+      "component": null,
+      "version_named": null,
+      "identifiers": [],
+      "notes": "Off-topic."
+    },
+    {
+      "id": "D25",
+      "project_id": "hmi",
+      "category": "general",
+      "question": "What value does the boundless rotary knob interface transmit?",
+      "expected_docs": [
+        "hmi_r25-11"
+      ],
+      "expected_pages": [
+        17
+      ],
+      "expected_section": "5.1.5",
+      "key_facts": [
+        [
+          "number of steps"
+        ],
+        [
+          "since the last transmitted value",
+          "last transmitted"
+        ]
+      ],
+      "component": null,
+      "version_named": null,
+      "identifiers": [],
+      "notes": "source: hmi_r25-11.pdf p.17 section 5.1.5."
+    },
+    {
+      "id": "D26",
+      "project_id": "hmi",
+      "category": "general",
+      "question": "What does the MM/T/HMI domain architecture aim to achieve?",
+      "expected_docs": [
+        "hmi_r25-11"
+      ],
+      "expected_pages": [
+        7
+      ],
+      "expected_section": "3",
+      "key_facts": [
+        [
+          "functional core"
+        ],
+        [
+          "HMI logic from HMI presentation",
+          "HMI presentation"
+        ],
+        [
+          "HMI resources"
+        ]
+      ],
+      "component": null,
+      "version_named": null,
+      "identifiers": [],
+      "notes": "source: hmi_r25-11.pdf p.7 section 3 Introduction bullet list (also: abstract the physical devices)."
+    },
+    {
+      "id": "D27",
+      "project_id": "chassis",
+      "category": "general",
+      "question": "Which three EPB implementation variants exist in the market according to the chassis document?",
+      "expected_docs": [
+        "chassis_r3.2.3",
+        "chassis_r3.1.5"
+      ],
+      "expected_pages": [
+        15,
+        16
+      ],
+      "expected_section": "5.2.3",
+      "key_facts": [
+        [
+          "EPB stand-alone"
+        ],
+        [
+          "EPB master-ESC slave"
+        ],
+        [
+          "ESC master-EPB slave"
+        ]
+      ],
+      "component": "EPB",
+      "version_named": null,
+      "identifiers": [],
+      "notes": "source: chassis_r3.2.3 p.15 / chassis_r3.1.5 p.16 section 5.2.3 EPB. Pages listed for both releases: R3.2.3 page and R3.1.5 page (R3.1.5 is offset by +1 because of an extra blank front page)."
+    },
+    {
+      "id": "D28",
+      "project_id": "chassis",
+      "category": "general",
+      "question": "What does the SSM (Stand Still Manager) software composition do?",
+      "expected_docs": [
+        "chassis_r3.2.3",
+        "chassis_r3.1.5"
+      ],
+      "expected_pages": [
+        10,
+        11
+      ],
+      "expected_section": "4.3",
+      "key_facts": [
+        [
+          "stand still"
+        ],
+        [
+          "drive off"
+        ],
+        [
+          "parked"
+        ]
+      ],
+      "component": "SSM",
+      "version_named": null,
+      "identifiers": [],
+      "notes": "source: chassis_r3.2.3 p.10 / chassis_r3.1.5 p.11 section 4.3; relies on ESC (service brake) and EPB (parking brake). Pages listed for both releases: R3.2.3 page and R3.1.5 page (R3.1.5 is offset by +1 because of an extra blank front page)."
+    },
+    {
+      "id": "D29",
+      "project_id": "body-comfort",
+      "category": "general",
+      "question": "What is the responsibility of the mirror actuator adapter?",
+      "expected_docs": [
+        "bodycomfort_r3.2.3",
+        "bodycomfort_r3.1.5"
+      ],
+      "expected_pages": [
+        13,
+        14
+      ],
+      "expected_section": "4.2.1",
+      "key_facts": [
+        [
+          "mechanical constraints",
+          "electrical"
+        ],
+        [
+          "commands"
+        ],
+        [
+          "desired position"
+        ]
+      ],
+      "component": "MirrorActuator Adapter",
+      "version_named": null,
+      "identifiers": [],
+      "notes": "source: r3.2.3 p.13 / r3.1.5 p.14 section 4.2.1 text. Pages listed for both releases: R3.2.3 page and R3.1.5 page (R3.1.5 is offset by +1 because of an extra blank front page)."
+    },
+    {
+      "id": "D30",
+      "project_id": "body-comfort",
+      "category": "general",
+      "question": "Why is the body and comfort decomposition aimed at purchasable SW-Cs rather than atomic SWCs?",
+      "expected_docs": [
+        "bodycomfort_r3.2.3",
+        "bodycomfort_r3.1.5"
+      ],
+      "expected_pages": [
+        5,
+        6
+      ],
+      "expected_section": "2.1",
+      "key_facts": [
+        [
+          "single vendor"
+        ],
+        [
+          "purchasable"
+        ]
+      ],
+      "component": null,
+      "version_named": null,
+      "identifiers": [],
+      "notes": "source: r3.2.3 p.5 / r3.1.5 p.6 section 2.1 Design Rationale (also repeated in 4.4.4 and chapter 5). Pages listed for both releases: R3.2.3 page and R3.1.5 page (R3.1.5 is offset by +1 because of an extra blank front page)."
+    },
+    {
+      "id": "D31",
+      "project_id": "body-comfort",
+      "category": "version",
+      "question": "What changed between release R3.1.5 and R3.2.3?",
+      "expected_docs": [
+        "bodycomfort_r3.2.3",
+        "bodycomfort_r3.1.5"
+      ],
+      "expected_pages": [
+        11
+      ],
+      "expected_section": "4.2.1",
+      "key_facts": [
+        [
+          "Interdomain"
+        ],
+        [
+          "AccessKeyless"
+        ],
+        [
+          "DriverProfile"
+        ],
+        [
+          "StaCentralLocking"
+        ]
+      ],
+      "component": null,
+      "version_named": "R3.1.5 -> R3.2.3",
+      "identifiers": [],
+      "notes": "source: inventory diff of bodycomfort_r3.1.5 -> bodycomfort_r3.2.3 (Compare tab): component Interdomain added, 12 ports added (p.11, 4.2.1), Profile Manager.DriverProfile direction changed, receivers of StaCentralLocking/StaOperationMode/StaProfilePerson/ReqCentralLocking changed. Retrieval score of this question is below the 0.65 threshold; routed to the inventory diff."
+    },
+    {
+      "id": "D32",
+      "project_id": "body-comfort",
+      "category": "version",
+      "question": "What is new in R3.2.3?",
+      "expected_docs": [
+        "bodycomfort_r3.2.3",
+        "bodycomfort_r3.1.5"
+      ],
+      "expected_pages": [
+        11
+      ],
+      "expected_section": "4.2.1",
+      "key_facts": [
+        [
+          "Interdomain"
+        ],
+        [
+          "AccessKeyless"
+        ],
+        [
+          "DriverProfile"
+        ],
+        [
+          "StaCentralLocking"
+        ]
+      ],
+      "component": null,
+      "version_named": "R3.2.3",
+      "identifiers": [],
+      "notes": "source: inventory diff of bodycomfort_r3.1.5 -> bodycomfort_r3.2.3 (Compare tab): component Interdomain added, 12 ports added (p.11, 4.2.1), Profile Manager.DriverProfile direction changed, receivers of StaCentralLocking/StaOperationMode/StaProfilePerson/ReqCentralLocking changed. One release named: compared with the release before it (R3.1.5)."
+    },
+    {
+      "id": "D33",
+      "project_id": "body-comfort",
+      "category": "unanswerable",
+      "question": "What changed between release R3.1.5 and R9.9.9?",
+      "expected_docs": [],
+      "expected_pages": [],
+      "expected_section": "",
+      "key_facts": [],
+      "component": null,
+      "version_named": "R3.1.5 -> R9.9.9",
+      "identifiers": [],
+      "notes": "Verified absent: the project has only R3.1.5 and R3.2.3. Must be refused with a message naming R9.9.9 and listing R3.1.5 and R3.2.3."
+    }
+  ]
+}

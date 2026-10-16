@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Architecture{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Architecture</h1>
+</div>
+
+<div class="toolbar">
+  <label class="field">Document
+    <select id="doc-select" data-wanted="{{ doc }}"><option>Loading</option></select>
+  </label>
+  <button class="btn" type="button" id="flow-btn">Functional-flow summary</button>
+</div>
+
+<div class="view-switch" role="group" aria-label="Architecture view">
+  <button type="button" data-view="inventory" aria-pressed="true">Inventory</button>
+  <button type="button" data-view="dependencies" aria-pressed="false">Dependencies</button>
+</div>
+<section id="architecture-empty" class="architecture-empty" aria-labelledby="empty-title" hidden></section>
+<section class="section" data-view-panel="inventory" aria-labelledby="inv-h">
+  <div class="section-head">
+    <h2 id="inv-h">Inventory</h2>
+    <label class="sr-only" for="inv-filter">Filter</label>
+    <input type="search" id="inv-filter" placeholder="Filter inventory…" size="28">
+  </div>
+  <div class="tabs" role="tablist" id="inv-tabs" aria-label="Entity type">
+    <button role="tab" type="button" id="tab-components" data-type="components" aria-selected="true" aria-controls="inventory">Components <span class="count"></span></button>
+    <button role="tab" type="button" id="tab-ports" data-type="ports" aria-selected="false" aria-controls="inventory" tabindex="-1">Ports <span class="count"></span></button>
+    <button role="tab" type="button" id="tab-interfaces" data-type="interfaces" aria-selected="false" aria-controls="inventory" tabindex="-1">Interfaces <span class="count"></span></button>
+    <button role="tab" type="button" id="tab-signals" data-type="signals" aria-selected="false" aria-controls="inventory" tabindex="-1">Signals <span class="count"></span></button>
+  </div>
+  <div id="coverage" class="note warn" role="status"></div>
+  <div id="inventory" role="tabpanel" aria-labelledby="tab-components"><p class="state">Loading the inventory.</p></div>
+</section>
+
+<section class="section" data-view-panel="dependencies" aria-labelledby="graph-h" hidden>
+  <div class="section-head">
+    <h2 id="graph-h">Dependency graph</h2>
+    <span class="muted" id="graph-count"></span>
+    <button class="btn" type="button" id="graph-fit">Fit graph</button>
+    <label class="field inline" for="graph-focus">Focus</label>
+    <select id="graph-focus"><option value="">Whole document</option></select>
+  </div>
+  <p class="graph-legend muted">Arrows point from the providing component to the consuming one. Blue: component, orange: port, green: interface, purple: signal. Hover a node for its source page.</p>
+  <div id="graph"><p class="state">Building the dependency graph.</p></div>
+</section>
+
+<aside class="side-panel" id="side-panel" role="dialog" aria-modal="true" aria-labelledby="panel-title" hidden>
+  <header>
+    <h2 id="panel-title"></h2>
+    <button class="btn" type="button" id="panel-close">Close</button>
+  </header>
+  <div class="panel-scroll" id="panel-body"></div>
+</aside>
+{% endblock %}
+{% block scripts %}<script type="module" src="/static/js/architecture.js?v=20261016-focus"></script>{% endblock %}

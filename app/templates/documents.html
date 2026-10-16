@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Documents{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Documents</h1>
+</div>
+<section class="section" aria-labelledby="docs-h">
+  <h2 id="docs-h">Library <span class="muted" id="docs-count"></span></h2>
+  <div id="docs-table"><p class="state">Loading documents.</p></div>
+</section>
+<details class="upload-disclosure">
+  <summary id="upload-h">Add document</summary>
+  <div class="upload-body">
+  {% if can_upload %}
+  <p class="muted">Approved or synthetic PDFs only.</p>
+  <form id="upload-form" class="upload-form" novalidate>
+    <label class="field grow">PDF file
+      <input type="file" name="file" accept=".pdf,application/pdf" required>
+    </label>
+    <label class="field">Document type
+      <select name="doc_type">
+        {% for t in doc_types %}<option value="{{ t }}">{{ t }}</option>{% endfor %}
+      </select>
+    </label>
+    <label class="field">Version
+      <input type="text" name="version" value="1.0" size="8" required>
+    </label>
+    <label class="field">Source status
+      <select name="source_status">
+        {% for s in source_statuses %}<option value="{{ s }}">{{ s }}</option>{% endfor %}
+      </select>
+    </label>
+    <button class="btn primary" type="submit" id="upload-btn">Upload and process</button>
+  </form>
+  <div id="upload-result" class="upload-result" aria-live="polite"></div>
+  {% else %}
+  <p class="muted">Uploading needs the admin role in this project; you are {{ role }}.</p>
+  {% endif %}
+</div>
+</details>
+
+
+{% endblock %}
+{% block scripts %}<script type="module" src="/static/js/documents.js"></script>{% endblock %}
