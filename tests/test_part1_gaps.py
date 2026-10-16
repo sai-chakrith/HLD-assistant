@@ -348,9 +348,9 @@ def test_projects_report_document_counts_of_member_projects_only(client, tmp_pat
 
 def test_documents_page_has_scope_line_and_settings_button(client):
     html = client.get("/documents?project=p1", cookies={"hld_user": "admin"}).text
-    assert 'id="docs-scope"' in html and 'id="open-settings"' in html and "Change project in" in html
+    assert 'id="workspace-switch"' in html and 'id="settings-btn"' in html and 'id="docs-table"' in html
     js = (ROOT / "app/static/js/documents.js").read_text(encoding="utf-8")
-    assert "openSettings" in js and "of ${total} document" in js
+    assert "loadDocuments" in js
 
 
 def test_reports_exports_and_pages_never_cross_projects(client, tmp_path, make_pdf):

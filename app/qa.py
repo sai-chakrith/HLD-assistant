@@ -90,7 +90,7 @@ class Answer(BaseModel):
     model: str = ""  # local model that wrote some of the answer text ("" when no model wrote any of it)
     refusal_reason: str = ""  # refused: "off_topic", "not_found" (on topic, not stated) or "not_extracted"
     answer_type: Literal["text", "inventory_list"] = "text"
-    built_from: Literal["llm", "inventory", "inventory+llm", "change_history", ""] = ""  # who wrote the text
+    built_from: Literal["llm", "inventory", "inventory+llm", "change_history", "section_lookup", ""] = ""
     inventory: dict[str, Any] | None = None  # inventory_list: {"blocks": [...], "description": "... [Cn]."}
     confidence_reason: str = ""  # one line for the confidence tooltip ("" = derived by the client)
 
@@ -1013,6 +1013,31 @@ def _answer(project_id: str, question: str, user: str, k: int, c: sqlite3.Connec
     r = retrieve.retrieve(project_id, question, k=k, cfg=retrieval, conn=c, chroma_dir=chroma_dir)
     hits, top = r.hits, r.top_score
     base = {"project_id": project_id, "question": question}
+    section = re.fullmatch(r"\s*(?:what does|describe|summari[sz]e|explain)\s+section\s+"
+                           r"(\d+(?:\.\d+)*)(?:\s+describe)?\s*[?.]?\s*", question, re.I)
+    if section and r.section_match:
+        lmap = label_map(hits)
+        selected = {}
+        for label, hit in lmap.items():
+            meta = hit["metadata"]
+            if str(meta.get("section_id", "")) == section[1] and not meta.get("inventory"):
+                selected.setdefault(meta["doc_id"], (label, hit))
+        if selected:
+            lines, citations, evidence = [], [], []
+            for doc_id, (label, hit) in selected.items():
+                meta = hit["metadata"]
+                excerpt = re.sub(r"\s+", " ", hit["text"]).strip()
+                if len(excerpt) > 500:
+                    excerpt = excerpt[:500].rsplit(" ", 1)[0] + "..."
+                lines.append(f"Section {section[1]} in {doc_id} ({meta.get('section_title', '')}): "
+                             f"{excerpt} [{label}]")
+                citations.append(_citation(label, hit))
+                evidence.append({"label": label, "text": hit["text"], "score": hit["score"], **meta})
+            return Answer(answer="\n\n".join(lines), mode="generated", confidence="Medium",
+                          confidence_reason="exact section-number lookup; source excerpts shown directly",
+                          built_from="section_lookup", citations=citations, evidence=evidence,
+                          limitation="Direct section excerpts, not a model-written summary. The same section "
+                                      "number can occur in several project documents.", **base)
     if os.environ.get("QA_DIFF", "1") != "0":  # releases named in the question: no similarity-threshold refusal
         diffed = release_diff_answer(question, r.query, label_map(hits), c, project_id, base)
         if diffed:

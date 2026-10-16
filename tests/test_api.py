@@ -28,7 +28,7 @@ def _upload(client, user, path, status="approved", pid="p1"):
 def test_health_and_auth(client):
     h = client.get("/health").json()
     assert h["status"] == "ok" and h["llm_mode"] == "none" and "reachable" in h["ollama"]
-    assert h["allowed_models"] == ["qwen2.5:3b", "qwen3:4b-instruct"]
+    assert h["allowed_models"] == ["qwen3:4b-instruct"]
     assert client.get("/projects").status_code == 401
     assert client.get("/projects", headers=H("ghost")).status_code == 403
     assert [p["project_id"] for p in client.get("/projects", headers=H("view")).json()] == ["p1", "p2"]
@@ -100,7 +100,7 @@ def test_audit_admin_only(client):
 def test_ask_rejects_unknown_model(client, make_pdf, tmp_path):
     r = client.post("/projects/p1/ask", headers=H("view"), json={"question": "x", "model": "gpt-4"})
     assert r.status_code == 422
-    r = client.post("/projects/p1/ask", headers=H("view"), json={"question": "x", "model": "qwen2.5:3b"})
+    r = client.post("/projects/p1/ask", headers=H("view"), json={"question": "x", "model": "qwen3:4b-instruct"})
     assert r.status_code == 200
 
 
@@ -223,7 +223,7 @@ def test_request_connection_can_close_on_another_thread(tmp_path):
 
 
 
-def test_rewarm_after_llm_extraction_reloads_the_qa_model(monkeypatch):
+def test_rewarm_is_skipped_when_extraction_uses_the_same_model(monkeypatch):
     from app import api, llm
     calls = []
 
@@ -234,6 +234,6 @@ def test_rewarm_after_llm_extraction_reloads_the_qa_model(monkeypatch):
 
     monkeypatch.setattr(api, "WARMUP", {"status": "ready", "steps": {}, "reason": ""})
     out = api.rewarm_qa_model(P(http_post=lambda *a: {}))
-    assert calls == [("qwen3:4b-instruct", "rewarm", "warming")]  # /health says warming during the reload
-    assert out["load_ms"] == 8500 and api.WARMUP["status"] == "ready"
+    assert calls == [] and out is None
+    assert api.WARMUP["status"] == "ready"
     assert api.rewarm_qa_model(llm.NullProvider()) is None

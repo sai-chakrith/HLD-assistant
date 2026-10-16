@@ -19,7 +19,9 @@ W, H = A4
 
 
 @pytest.fixture(autouse=True)
-def _hash_embedder():
+def _hash_embedder(monkeypatch):
+    # Local login credentials must not change isolated test identities.
+    monkeypatch.delenv("HLD_AUTH_TOKEN_HASHES", raising=False)
     retrieve.reset_embedder()
     yield
     retrieve.reset_embedder()

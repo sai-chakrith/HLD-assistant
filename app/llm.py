@@ -182,7 +182,7 @@ class NullProvider(_CompleteMixin):
 
 
 class OllamaProvider(_CompleteMixin):
-    """Local Ollama server. Model: qwen2.5:3b (default), overridable per call among ALLOWED_MODELS.
+    """Local Ollama server. Model: qwen3:4b-instruct, configurable through ALLOWED_MODELS.
 
     ``http_post(url, payload, timeout)`` returns the decoded JSON body; injectable for tests.
     """

@@ -27,7 +27,7 @@ class FakeHttp:
 
 def prov(tmp_path, *responses):
     http = FakeHttp(*responses)
-    return llm.OllamaProvider("http://x:1/", "qwen2.5:3b", db_path=tmp_path / "c.db",
+    return llm.OllamaProvider("http://x:1/", "qwen3:4b-instruct", db_path=tmp_path / "c.db",
                               trace_path=tmp_path / "t.jsonl", http_post=http), http
 
 
@@ -54,14 +54,16 @@ def test_get_provider_selection():
 
 def test_default_provider_setting():
     from app.config import settings
-    assert settings.allowed_models == ("qwen2.5:3b", "qwen3:4b-instruct")
+    assert settings.allowed_models == ("qwen3:4b-instruct",)
     assert llm.OllamaProvider("http://x:1/", "m").base_url == "http://x:1"
 
 
 def test_validate_model():
-    assert llm.validate_model("qwen2.5:3b") == "qwen2.5:3b"
+    assert llm.validate_model("qwen3:4b-instruct") == "qwen3:4b-instruct"
     with pytest.raises(llm.ModelNotAllowed):
         llm.validate_model("gpt-4")
+    with pytest.raises(llm.ModelNotAllowed):
+        llm.validate_model("qwen2.5:3b")
 
 
 def test_text_payload_and_cache(tmp_path):
@@ -85,8 +87,8 @@ def test_cache_key_depends_on_model_and_schema():
 
 def test_per_call_model(tmp_path):
     p, http = prov(tmp_path, "x")
-    p.generate("q", model="qwen2.5:3b")
-    assert http.calls[0][1]["model"] == "qwen2.5:3b"
+    p.generate("q", model="qwen3:4b-instruct")
+    assert http.calls[0][1]["model"] == "qwen3:4b-instruct"
 
 
 def test_schema_retry_with_validation_error(tmp_path):
@@ -104,7 +106,7 @@ def test_schema_fails_after_retries(tmp_path):
         p.generate("x", schema=Item)
     assert len(http.calls) == 3
     assert traces(tmp_path)[-1]["ok"] is False
-    assert llm.cache_get(llm.cache_key("qwen2.5:3b", "", "x", Item), tmp_path / "c.db") is None
+    assert llm.cache_get(llm.cache_key("qwen3:4b-instruct", "", "x", Item), tmp_path / "c.db") is None
 
 
 @pytest.mark.parametrize("exc", [requests.ConnectionError("refused"), requests.Timeout("slow")])
@@ -140,7 +142,7 @@ def test_ollama_json_schema_and_cache_hit(tmp_path):
 @pytest.mark.llm
 def test_ollama_status_lists_models():
     s = llm.ollama_status()
-    assert s["reachable"] and any(m.startswith("qwen2.5:3b") for m in s["models"])
+    assert s["reachable"] and any(m.startswith("qwen3:4b-instruct") for m in s["models"])
 
 
 # ---------------------------------------------------------------- qwen3 thinking + timed (cache-read off) runs
@@ -153,7 +155,7 @@ def test_qwen3_payload_disables_thinking_and_strips_think_blocks(tmp_path):
 
 def test_every_payload_sends_think_false(tmp_path):
     p, http = prov(tmp_path, "x")
-    p.generate("q", model="qwen2.5:3b")
+    p.generate("q", model="qwen3:4b-instruct")
     assert http.calls[0][1]["think"] is False
 
 
@@ -166,11 +168,12 @@ def test_cache_read_off_regenerates_but_still_stores(tmp_path, monkeypatch):
     assert p.generate("q") == "second" and len(http.calls) == 2  # the regenerated answer was stored
 
 
-def test_keep_alive_only_for_the_qa_model(tmp_path):
+def test_keep_alive_for_the_shared_model(tmp_path):
     p, http = prov(tmp_path, "a", "b")
     p.generate("q", model="qwen3:4b-instruct")
-    p.generate("q", model="qwen2.5:3b")
-    assert http.calls[0][1]["keep_alive"] == "30m" and "keep_alive" not in http.calls[1][1]
+    p.generate("extract q", model="qwen3:4b-instruct", purpose="extract_prose")
+    assert all(call[1]["keep_alive"] == "30m" for call in http.calls)
+    assert len(http.calls) == 2
 
 
 def test_prose_extraction_defaults_to_the_extract_model():
@@ -184,7 +187,7 @@ def test_prose_extraction_defaults_to_the_extract_model():
 
     sec = {"section_id": "4.1", "title": "Wiper", "page_start": 1, "text": "The WiperManager controls the wiper. " * 20}
     extract.extract_from_prose(sec, "d", "1", provider=P())
-    assert seen and set(seen) == {"qwen2.5:3b"}
+    assert seen and set(seen) == {"qwen3:4b-instruct"}
 
 
 
@@ -192,9 +195,9 @@ def test_prose_extraction_defaults_to_the_extract_model():
 @pytest.mark.parametrize("purpose,model", [("qa", "qwen3:4b-instruct"), ("qa_desc", "qwen3:4b-instruct"),
                                            ("component_report", "qwen3:4b-instruct"),
                                            ("doc_summary_map", "qwen3:4b-instruct"), ("summary", "qwen3:4b-instruct"),
-                                           ("report", "qwen3:4b-instruct"), ("extract_prose", "qwen2.5:3b"),
-                                           ("extract", "qwen2.5:3b"), ("upload", "qwen2.5:3b"),
-                                           ("other", "qwen2.5:3b")])
+                                           ("report", "qwen3:4b-instruct"), ("extract_prose", "qwen3:4b-instruct"),
+                                           ("extract", "qwen3:4b-instruct"), ("upload", "qwen3:4b-instruct"),
+                                           ("other", "qwen3:4b-instruct")])
 def test_model_routed_by_purpose(tmp_path, purpose, model):
     p, http = prov(tmp_path, "x")
     p.generate(f"q-{purpose}", purpose=purpose)
@@ -217,13 +220,13 @@ class LoadHttp(FakeHttp):
 
 def test_model_swap_is_traced_with_duration(tmp_path):
     http = LoadHttp(9_000_000_000, 20_000_000, 7_500_000_000)  # load 9 s, warm 20 ms, load 7.5 s
-    p = llm.OllamaProvider("http://x:1/", "qwen2.5:3b", db_path=tmp_path / "c.db", trace_path=tmp_path / "t.jsonl",
+    p = llm.OllamaProvider("http://x:1/", "qwen3:4b-instruct", db_path=tmp_path / "c.db", trace_path=tmp_path / "t.jsonl",
                            http_post=http)
     p.generate("a", purpose="qa")
     p.generate("b", purpose="qa")
     p.generate("c", purpose="extract_prose")
     swaps = [t for t in traces(tmp_path) if t["purpose"] == "model_swap"]
-    assert [(s["from_model"], s["model"], s["latency_ms"]) for s in swaps][-1] == ("qwen3:4b-instruct", "qwen2.5:3b", 7500)
+    assert [(s["from_model"], s["model"], s["latency_ms"]) for s in swaps][-1] == ("qwen3:4b-instruct", "qwen3:4b-instruct", 7500)
     assert len(swaps) == 2
 
 

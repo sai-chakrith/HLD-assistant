@@ -9,11 +9,11 @@ from app.config import settings
 from scripts import demo_reset
 
 
-def test_model_split_defaults():
-    """Q&A/summaries on qwen3 (kept loaded), extraction on qwen2.5; both allowed."""
-    assert settings.demo_model == "qwen3:4b-instruct" and settings.llm_extract_model == "qwen2.5:3b"
-    assert {"qwen3:4b-instruct", "qwen2.5:3b"} <= set(settings.allowed_models)
-    assert settings.ollama_model == "qwen2.5:3b" and settings.demo_keep_alive == "30m"
+def test_single_model_defaults():
+    """Answers, summaries and extraction share one allowed local model."""
+    assert settings.demo_model == "qwen3:4b-instruct" and settings.llm_extract_model == "qwen3:4b-instruct"
+    assert settings.allowed_models == ("qwen3:4b-instruct",)
+    assert settings.ollama_model == "qwen3:4b-instruct" and settings.demo_keep_alive == "30m"
 
 
 def test_demo_helper_prefers_request_model():
@@ -39,9 +39,9 @@ def test_ask_uses_demo_model_when_none_given(monkeypatch, tmp_path, conn, dirs):
     c = TestClient(api.app)
     h = {"X-User": "view"}
     c.post("/projects/p1/ask", headers=h, json={"question": "x"})
-    c.post("/projects/p1/ask", headers=h, json={"question": "x", "model": "qwen2.5:3b"})
+    c.post("/projects/p1/ask", headers=h, json={"question": "x", "model": "qwen3:4b-instruct"})
     api.app.dependency_overrides.clear()
-    assert seen == ["qwen3:4b-instruct", "qwen2.5:3b"]
+    assert seen == ["qwen3:4b-instruct", "qwen3:4b-instruct"]
 
 
 def _health(monkeypatch, state):

@@ -8,7 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 import build_report_pdf as b  # noqa: E402
 
 DATA = {
-    "per_model": {"qwen2.5:3b": {"qa": {"summary": {"answer_correctness": 0.75, "latency": {"p50_ms": 2974.8}}},
+    "per_model": {"qwen3:4b-instruct": {"qa": {"summary": {"answer_correctness": 0.75, "latency": {"p50_ms": 2974.8}}},
                                 "heldout_v4": {"syn_hld_v4_heldout": {"micro_all": {"f1": 0.5, "recall": None}}}}},
     "deterministic": {"heldout_v3": {"syn_hld_v3_heldout": {"micro_all": {"f1": 0.25}}},
                       "methods": {"bodycomfort_r3.1.5": {"ports": {"diagram": 3}}}},
@@ -21,29 +21,29 @@ def r(t):
 
 
 def test_model_key_with_dot_and_colon():
-    assert r("{{per_model.qwen2.5:3b.qa.summary.answer_correctness|pct}}")[0] == "75%"
-    assert r("{{per_model.qwen2.5:3b.heldout_v4.syn_hld_v4_heldout.micro_all.f1|f2}}")[0] == "0.50"
+    assert r("{{per_model.qwen3:4b-instruct.qa.summary.answer_correctness|pct}}")[0] == "75%"
+    assert r("{{per_model.qwen3:4b-instruct.heldout_v4.syn_hld_v4_heldout.micro_all.f1|f2}}")[0] == "0.50"
 
 
 def test_doc_id_with_dots_and_bracket_form():
     assert r("{{deterministic.methods.bodycomfort_r3.1.5.ports.diagram}}")[0] == "3"
-    assert r("{{['per_model']['qwen2.5:3b']['qa']['summary']['answer_correctness']|pct1}}")[0] == "75.0%"
+    assert r("{{['per_model']['qwen3:4b-instruct']['qa']['summary']['answer_correctness']|pct1}}")[0] == "75.0%"
 
 
 def test_formats_and_list_index():
-    assert r("{{per_model.qwen2.5:3b.qa.summary.latency.p50_ms|s}}")[0] == "3.0 s"
+    assert r("{{per_model.qwen3:4b-instruct.qa.summary.latency.p50_ms|s}}")[0] == "3.0 s"
     assert r("{{deterministic.heldout_v3.syn_hld_v3_heldout.micro_all.f1|f1}}")[0] == "0.2"
     assert r("{{list.1.x|int}}")[0] == "2"
 
 
 def test_len_format():
     assert r("{{list|len}}")[0] == "2"
-    assert r("{{per_model.qwen2.5:3b.qa.summary.answer_correctness|len}}")[0] == b.MISSING_TEXT
+    assert r("{{per_model.qwen3:4b-instruct.qa.summary.answer_correctness|len}}")[0] == b.MISSING_TEXT
 
 
 def test_missing_null_and_bad_format_render_na_without_crash():
-    out, missing = r("a {{nope.x}} b {{per_model.qwen2.5:3b.heldout_v4.syn_hld_v4_heldout.micro_all.recall|pct}} "
-                     "c {{per_model.qwen2.5:3b|pct}} d {{list.9.x}} e {{deterministic.heldout_v3|zzz}}")
+    out, missing = r("a {{nope.x}} b {{per_model.qwen3:4b-instruct.heldout_v4.syn_hld_v4_heldout.micro_all.recall|pct}} "
+                     "c {{per_model.qwen3:4b-instruct|pct}} d {{list.9.x}} e {{deterministic.heldout_v3|zzz}}")
     assert out.count(b.MISSING_TEXT) == 5
     assert len(missing) == 5
 

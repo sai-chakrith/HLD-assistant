@@ -112,8 +112,8 @@ def test_model_passed_to_provider(conn, indexed):
             return "Moves the wiper [C1]."
     p = P()
     qa.ask("p1", "wiper", "view", conn=conn, chroma_dir=indexed["chroma_dir"], provider=p, threshold=-1.0,
-           model="qwen2.5:3b")
-    assert p.kw[0] == "qwen2.5:3b" and p.kw[1] == "qa" and p.kw[2]
+           model="qwen3:4b-instruct")
+    assert p.kw[0] == "qwen3:4b-instruct" and p.kw[1] == "qa" and p.kw[2]
 
 
 @pytest.fixture

@@ -30,3 +30,4 @@ data/archives/
 data/server-logs/
 *.log
 *.sqlite3
+data/auth/

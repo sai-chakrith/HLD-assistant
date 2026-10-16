@@ -581,7 +581,7 @@ def composition_groups(doc: dict, components: list[_Entity]) -> list[_Entity]:
 
 class LLMItem(BaseModel):
     name: str
-    description: str = ""
+    description: str = Field(default="", max_length=120)
     evidence: str = Field(min_length=3, max_length=500)
 
 
@@ -621,7 +621,8 @@ PROSE_SYSTEM = (
     "required if it requires/consumes/receives it, interface = its interface name), interfaces (name, kind), "
     "signals (name, sender component, receivers = list of components).\n"
     "Rules: list ONLY entities that the text explicitly names. Never invent names. Use the exact spelling of the text. "
-    "Every item's evidence field MUST contain a non-empty quote of at most 25 words copied word for word from the "
+    "Use compact JSON and omit empty optional fields. Descriptions must be brief, at most 12 words. "
+    "Every item's evidence field MUST contain the shortest supporting quote, at most 15 words copied word for word from the "
     "text, including that item's exact name. If you cannot provide that quote, omit the item. "
     "If the text names no such entity, return empty lists. Do not list generic words like 'system' or 'driver'."
 )

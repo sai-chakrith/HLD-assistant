@@ -25,8 +25,8 @@ def uploaded(client, tmp_path, make_pdf):
 
 
 def test_default_model_is_qwen_and_allowed():
-    assert settings.ollama_model == "qwen2.5:3b"
-    assert "qwen2.5:3b" in settings.allowed_models
+    assert settings.ollama_model == "qwen3:4b-instruct"
+    assert "qwen3:4b-instruct" in settings.allowed_models
 
 
 def test_page_png_member_ok_and_isolated(client, uploaded):

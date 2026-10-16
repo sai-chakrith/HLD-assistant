@@ -122,6 +122,33 @@ def test_named_and_older_release(two_releases):
     assert old.hits[0]["metadata"]["doc_id"] == "bc_r3.1.5"
 
 
+def test_exact_section_lookup_is_not_semantic_thresholded(two_releases, conn):
+    from app import llm, qa
+    cfg = RetrievalConfig(inventory=False, expand=False)
+    result = qa.ask("p1", "What does section 4.1 describe?", "admin", conn=conn,
+                    chroma_dir=two_releases["chroma_dir"], provider=llm.NullProvider(),
+                    threshold=1.0, retrieval=cfg, store=False)
+    assert result.mode == "generated" and result.built_from == "section_lookup"
+    assert "Rain sensing" in result.answer and result.citations
+    assert all(c.section_id == "4.1" and c.page_start == 9 for c in result.citations)
+    assert all(c.doc_id == "bc_r3.2.3" for c in result.citations)
+    assert "project two" not in result.answer
+
+
+def test_section_lookup_keeps_scope_and_exact_number(two_releases):
+    cfg = RetrievalConfig(inventory=False, expand=False)
+    for question, doc in [("In R3.1.5, describe section 4.1", "bc_r3.1.5"),
+                          ("In R3.2.3, describe section 4.1", "bc_r3.2.3")]:
+        result = r.retrieve("p1", question, cfg=cfg, chroma_dir=two_releases["chroma_dir"])
+        assert result.section_match
+        assert result.hits[0]["metadata"]["doc_id"] == doc
+        assert result.hits[0]["metadata"]["section_id"] == "4.1"
+    missing = r.retrieve("p1", "Describe section 4.10", cfg=cfg, chroma_dir=two_releases["chroma_dir"])
+    assert not missing.section_match
+    other = r.retrieve("p2", "Describe section 4.1", cfg=cfg, chroma_dir=two_releases["chroma_dir"])
+    assert not other.section_match
+
+
 def test_section_expansion_adds_parent_within_budget(two_releases):
     cfg = RetrievalConfig(inventory=False, expand=True, context_tokens=10_000)
     res = r.retrieve("p1", "What does the AutoWipingEvaluator compute?", k=1, cfg=cfg,

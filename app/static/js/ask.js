@@ -6,7 +6,7 @@ import { api, citeText, citeTitle, ctx, h, loadDocuments, matchTag, reviewLabel,
 import {
   CLOSEST_LABEL, evidenceLabel, remember, sampleAnswered, sampleCandidates, showClosest, showsModel, sourceText,
   statusText, tableLayout,
-} from "./answer_view.js?v=20261016-samples";
+} from "./answer_view.js?v=20261016-section";
 
 const form = document.getElementById("ask-form");
 const input = document.getElementById("question");

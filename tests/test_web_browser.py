@@ -30,6 +30,8 @@ def _launch(p):
     cache = Path(os.environ.get("PLAYWRIGHT_BROWSERS_PATH") or Path.home() / "AppData/Local/ms-playwright")
     if not cache.is_dir():
         cache = Path.home() / ".cache/ms-playwright"
+    if not cache.is_dir():
+        cache = ROOT / "tools/playwright"
     exes = sorted(glob.glob(str(cache / "chromium_headless_shell-*/*/chrome-headless-shell*")) +
                   glob.glob(str(cache / "chromium-*/*/chrome.exe")) + glob.glob(str(cache / "chromium-*/*/chrome")),
                   reverse=True)
@@ -58,7 +60,8 @@ def server(tmp_path, make_pdf):
     env = {**os.environ, "DATA_DIR": str(data), "DB_PATH": str(data / "hld.db"), "CHROMA_DIR": str(tmp_path / "chroma"),
            "PROCESSED_DIR": str(data / "processed"), "LLM_PROVIDER": "none", "EMBEDDER": "hash", "ALLOW_HASH_QA": "1",
            "WARMUP": "0", "HF_HUB_OFFLINE": "1", "TRANSFORMERS_OFFLINE": "1",
-           "OLLAMA_BASE_URL": "http://127.0.0.1:9"}  # closed port: /health never waits on a real Ollama
+           "OLLAMA_BASE_URL": "http://127.0.0.1:9", "PYTHON_DOTENV_DISABLED": "1",
+           "SIMILARITY_THRESHOLD": "0", "HIGH_SCORE": "1"}  # hash scores are not BGE-calibrated
     env.pop("PYTEST_CURRENT_TEST", None)
     c = controls.get_conn(data / "hld.db")
     seed(c)
@@ -172,6 +175,7 @@ def test_browser_smoke_rejected_upload_ask_review(server):
             page.reload()
             page.wait_for_selector("#inventory table")
             assert "Source checked by the browser smoke test" in page.inner_text("#inventory")
+            page.locator("#coverage summary").click()
             assert "completeness has not been established" in page.inner_text("#coverage")
 
             # Demo path keeps the workspace selected. Every screen fits a narrow phone viewport.

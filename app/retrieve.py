@@ -492,6 +492,7 @@ class Retrieval:
     coverage: float = 1.0           # share of the question's content terms that occur in the project's chunks
     missing_terms: list[str] = field(default_factory=list)
     searched: list[str] = field(default_factory=list)  # "doc_id (version)" of the documents in scope
+    section_match: bool = False
 
 
 # question words that say nothing about the topic (kept out of the coverage test)
@@ -891,6 +892,19 @@ def retrieve(project_id: str, question: str, k: int = 5, cfg: RetrievalConfig | 
         ce = get_reranker().predict([(question, h["text"]) for h in head], show_progress_bar=False)
         order = [h for _, h in sorted(zip(ce, head), key=lambda x: -x[0])] + order[cfg.candidates:]
         timings["rerank_ms"] = (time.perf_counter() - t1) * 1000
+    section = re.search(r"\bsection\s+(\d+(?:\.\d+)*)\b", question, re.I)
+    section_hits = []
+    if section and cfg.query_understanding:
+        # Section numbers are exact metadata keys, not semantic-similarity queries.
+        # Keep document/version scope; 4.1 must never match 4.10 or 4.1.1.
+        section_hits = [_hit(corpus, cid, dense_score.get(cid, 0.0))
+                        for cid, meta in zip(corpus.ids, corpus.metas)
+                        if str(meta.get("section_id", "")) == section[1]
+                        and (not scope or meta["doc_id"] in scope)]
+        section_hits = apply_version_policy(section_hits, corpus, docs, info)
+        section_hits = [h for h in section_hits if str(h["metadata"].get("section_id", "")) == section[1]]
+        ids = {h["id"] for h in section_hits}
+        order = section_hits + [h for h in order if h["id"] not in ids]
     inv_hits = inventory_evidence(project_id, info, conn, docs, inv=inv) if (cfg.inventory and inv) else []
     text_hits = order[:max(k - len(inv_hits), 3) if inv_hits else k]
     top = max((h["score"] for h in text_hits), default=0.0)
@@ -903,4 +917,4 @@ def retrieve(project_id: str, question: str, k: int = 5, cfg: RetrievalConfig | 
     cov, missing = term_coverage(question, corpus)
     searched = [f"{d['doc_id']} ({d.get('version')})" for d in docs if not scope or d["doc_id"] in scope]
     return Retrieval(hits, top, bool(inv_hits and info.components), info, note, timings, exact, cov,
-                     reportable_missing(missing), searched)
+                     reportable_missing(missing), searched, bool(section_hits))

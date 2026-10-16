@@ -1,3 +1,7 @@
+# Current configuration: one Qwen3 model
+
+As of 16 October 2026, answers, summaries, reports, fallback generation and optional prose extraction all use `qwen3:4b-instruct`. The default allowlist contains only that model. A live real-passage extraction test passed with verbatim evidence checks. Earlier two-model configuration and evaluation notes below are historical; they are not a new comparison benchmark.
+
 # Model and configuration record
 
 Purpose: every model, library setting, threshold and prompt that influences a result, so a run can be reproduced and

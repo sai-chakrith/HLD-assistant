@@ -99,7 +99,7 @@ def main(argv: list[str] | None = None) -> int:
         ap.add_argument("--" + n)
     ap.add_argument("--keep-llm-cache", action="store_true")
     ap.add_argument("--skip-reports", action="store_true")
-    ap.add_argument("--model", default=os.environ.get("DEMO_MODEL", "qwen2.5:3b"))
+    ap.add_argument("--model", default=os.environ.get("DEMO_MODEL", "qwen3:4b-instruct"))
     a = ap.parse_args(argv)
     t = resolve_target(a)
     check_sources(t)

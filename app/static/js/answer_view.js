@@ -21,6 +21,7 @@ export function sourceText(a) {
     inventory: "Built from extracted inventory",
     "inventory+llm": "Built from extracted inventory; description written by the model",
     change_history: "Built from the change-history table",
+    section_lookup: "Source section excerpts",
   }[a.built_from] || "Generated answer";
 }
 

@@ -116,7 +116,11 @@ def test_ui_has_no_business_logic():
     """Page code only talks to the API; the router only resolves the viewer's role via the API's list_projects."""
     for f in (APP_DIR / "static" / "js").glob("*.js"):
         text = f.read_text(encoding="utf-8")
-        assert "localStorage" not in text and "sessionStorage" not in text  # session history is memory only
+        assert "localStorage" not in text
+        if f.name != "ask.js":
+            assert "sessionStorage" not in text
+    ask = (APP_DIR / "static/js/ask.js").read_text(encoding="utf-8")
+    assert "sessionStorage" in ask and "encodeURIComponent(ctx.user)" in ask and "encodeURIComponent(ctx.project)" in ask
     src = Path(web.__file__).read_text(encoding="utf-8")
     for banned in ("from app import qa", "from app import checks", "extract", "compare_mod", "summarize", "llm", "SELECT"):
         assert banned not in src

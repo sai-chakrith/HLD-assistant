@@ -1,6 +1,6 @@
 """Run extraction for every document in the DB, print counts, build + export graphs.
 
-Usage: python scripts/extract_all.py [--llm] [--model qwen2.5:3b] [--doc DOC_ID ...] [--no-diagram] [--no-convention]
+Usage: python scripts/extract_all.py [--llm] [--model qwen3:4b-instruct] [--doc DOC_ID ...] [--no-diagram] [--no-convention]
 Layers: table + heuristics always; diagram geometry (PDF located by sha256) and naming convention by default;
 --llm adds prose extraction with the local Ollama model (cached; slow the first time).
 """

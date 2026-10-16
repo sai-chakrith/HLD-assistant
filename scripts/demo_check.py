@@ -20,7 +20,7 @@ import requests
 BASE = os.environ.get("API_BASE_URL", "http://127.0.0.1:8000").rstrip("/")
 ROOT = Path(__file__).resolve().parent.parent
 SC = "demo-check"
-MODEL = os.environ.get("DEMO_MODEL", "qwen2.5:3b")
+MODEL = os.environ.get("DEMO_MODEL", "qwen3:4b-instruct")
 results: dict[str, dict] = {}
 
 
@@ -232,7 +232,7 @@ def guard(self, addr, *a, **k):
     return real(self, addr, *a, **k)
 socket.socket.connect = guard
 from app import qa, llm
-a = qa.ask("body-comfort", "Which ports does the FrontWasher component have?", "admin", model="qwen2.5:3b", provider=llm.get_provider())
+a = qa.ask("body-comfort", "Which ports does the FrontWasher component have?", "admin", model="qwen3:4b-instruct", provider=llm.get_provider())
 print(json.dumps({"mode": a.mode, "confidence": a.confidence, "n_cit": len(a.citations), "answer": a.answer[:200]}))
 '''
     env = {**os.environ, "PYTHONPATH": str(ROOT), "PYTHONIOENCODING": "utf-8"}

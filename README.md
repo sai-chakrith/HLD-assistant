@@ -1,6 +1,10 @@
 # AUTOSAR HLD Document Analysis Assistant
 
-## Current local verification and upgrades (15 October 2026)
+## Current local verification and upgrades
+
+As of 16 October 2026, `qwen3:4b-instruct` is the single configured model for Q&A, summaries, reports and optional prose extraction. `OLLAMA_MODEL`, `DEMO_MODEL`, and `LLM_EXTRACT_MODEL` all select it; the default allowlist contains only this model. Historical evaluation results below describe earlier configurations and are not a benchmark of this change.
+
+### Verification recorded on 15 October 2026
 
 The latest work and its evidence are described in `docs/UPGRADE_VERIFICATION.md`. The historical evaluation below
 belongs to the earlier build; it is not a fresh accuracy claim for this version.
@@ -22,6 +26,12 @@ or hashes into source control. The browser then uses `/login` with an HttpOnly s
 use `Authorization: Bearer <token>`. Demo `X-User` headers and identity cookies cannot impersonate users in this mode.
 Use HTTPS in front of the service when exposing it beyond localhost. This is optional local token authentication;
 enterprise SSO and organisation account provisioning remain outside this pilot.
+
+To enable local sign-in for the existing admin, reviewer, and viewer accounts, run
+`.venv/Scripts/python.exe -m scripts.configure_auth`, then restart the server.
+The command generates separate random tokens in ignored `data/auth/<username>-access.txt` files and writes
+only their SHA-256 hashes to the ignored `.env`. Enter the appropriate token at `/login`; do not commit
+or publicly share those files. Existing authentication configuration is never overwritten by this command.
 
 `docs/INDEPENDENT_EVALUATION.md` specifies the independent document annotation and timed reviewer study still needed
 before claiming real-world accuracy or time saved.
@@ -51,7 +61,7 @@ flowchart LR
   DB --> GR[graph.py] & CHK[checks.py M1-M4 C1-C4] & CMP[compare.py] & EXP[export.py]
   RET --> QA[qa.py grounded Q&A] & SUM[summarize.py]
   DB --> SUM
-  LLM[Ollama on host<br/>qwen3:4b-instruct Q&A, qwen2.5:3b extraction] -.-> QA & SUM & EXT
+  LLM[Ollama on host<br/>qwen3:4b-instruct answers and extraction] -.-> QA & SUM & EXT
   CTRL[controls.py<br/>roles, audit, review] --- API
   QA & SUM & GR & CHK & CMP & EXP --> API[api.py FastAPI]
   API <--> UI[web.py + templates + static JS<br/>browser UI served by the same app]
@@ -70,8 +80,8 @@ Every stored entity, finding, report and answer carries a citation (doc_id, vers
 
 ## Local-only design
 
-- LLM: Ollama on the same machine: `qwen3:4b-instruct` for Q&A, reports and summaries (`DEMO_MODEL`), `qwen2.5:3b` for
-  LLM extraction (`LLM_EXTRACT_MODEL`); both fit a 4 GB GPU at least partly. No API keys exist in the code or config.
+- LLM: Ollama on the same machine: `qwen3:4b-instruct` for Q&A, reports and summaries (`DEMO_MODEL`), the same model for
+  LLM extraction (`LLM_EXTRACT_MODEL`); the quantised model runs at least partly on the available 4 GB GPU. No API keys exist in the code or config.
 - Embeddings: `BAAI/bge-small-en-v1.5` from the local Hugging Face cache; a deterministic hashing embedder is the
   fallback (Q&A refuses to answer on it).
 - After the first model download the whole pipeline works offline (checked with a socket-blocking test, see
@@ -101,7 +111,6 @@ python -m venv .venv
 .venv\Scripts\python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
 .venv\Scripts\python -m pip install -r requirements.txt
 copy .env.example .env          # optional, every setting has a default
-ollama pull qwen2.5:3b
 ollama pull qwen3:4b-instruct
 ```
 
@@ -156,7 +165,6 @@ Screenshots: `docs/screenshots/` (regenerate with `python scripts/screenshots.py
 Ollama stays on the host (it needs the GPU); containers reach it at `http://host.docker.internal:11434`.
 
 ```
-ollama pull qwen2.5:3b
 ollama pull qwen3:4b-instruct
 docker compose build
 docker compose run --rm api sh -c "python scripts/download_data.py && python scripts/seed.py && python scripts/ingest_all.py && python scripts/extract_all.py && python scripts/ingest_synthetic.py && python scripts/run_checks_all.py"
@@ -170,7 +178,7 @@ The compose file validates with `docker compose config`; the image build was not
 ## Live demo setup
 
 - **DEMO_MODEL** (`qwen3:4b-instruct`) answers interactive requests (Q&A, reports, summaries) and stays loaded
-  (`DEMO_KEEP_ALIVE=30m`); **LLM_EXTRACT_MODEL** (`qwen2.5:3b`) is used for LLM extraction at upload.
+  (`DEMO_KEEP_ALIVE=30m`); **LLM_EXTRACT_MODEL** (`qwen3:4b-instruct`) is used for LLM extraction at upload.
 - **Warm-up**: at start the API loads the bge embedder and sends a 1-token prompt to DEMO_MODEL in a background
   thread; `/health` reports `warmup` as `warming`, `ready` or `degraded` (with a reason, e.g. Ollama down; the API never
   crashes). The UI status dot reads `warming` until ready. Set `WARMUP=0` to skip it.

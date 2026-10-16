@@ -1,0 +1,50 @@
+{
+  "regression": {
+    "passed": 485,
+    "failed": 0,
+    "errors": 0
+  },
+  "live": {
+    "total": 58,
+    "passed": 58,
+    "failed": 0
+  },
+  "real_extraction": {
+    "passed": true,
+    "requests": [
+      {
+        "seconds": 25.77,
+        "ok": true,
+        "model": "qwen3:4b-instruct"
+      },
+      {
+        "seconds": 97.39,
+        "ok": true,
+        "model": "qwen3:4b-instruct"
+      },
+      {
+        "seconds": 40.85,
+        "ok": true,
+        "model": "qwen3:4b-instruct"
+      },
+      {
+        "seconds": 20.84,
+        "ok": true,
+        "model": "qwen3:4b-instruct"
+      },
+      {
+        "seconds": 28.46,
+        "ok": true,
+        "model": "qwen3:4b-instruct"
+      }
+    ]
+  },
+  "runtime": {
+    "status": "ok",
+    "allowed_models": [
+      "qwen3:4b-instruct"
+    ],
+    "auth_mode": "token",
+    "qa_ready": true
+  }
+}
